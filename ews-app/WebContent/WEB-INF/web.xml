@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+  <display-name>ews-application</display-name>
+
+  <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>com.corp.frame.tj.struts.filters.SetCharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ignore</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <servlet-name>action</servlet-name>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>action</servlet-name>
+    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>/WEB-INF/struts-config.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>0</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+   <servlet>
+    <servlet-name>MenuServlet</servlet-name>
+    <display-name>MenuServlet</display-name>
+    <servlet-class>com.corp.servlet.MenuServletV12</servlet-class>
+  </servlet>
+
+  <servlet>
+	<servlet-name>ShowImageServlet</servlet-name>
+	<display-name>ShowImageServlet</display-name>
+	<servlet-class>com.corp.showImage.ShowImageServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AjaxService</servlet-name>
+    <display-name>AjaxService</display-name>
+    <servlet-class>com.corp.servlet.AjaxService</servlet-class>
+  </servlet>
+  <!--用友回调-->
+  <servlet>
+    <servlet-name>YYCallbackServlet</servlet-name>
+    <display-name>YYCallbackServlet</display-name>
+    <servlet-class>com.corp.servlet.YYCallbackServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>action</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ShowImageServlet</servlet-name>
+    <url-pattern>/ShowImageServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AjaxService</servlet-name>
+    <url-pattern>/AjaxService</url-pattern>
+  </servlet-mapping>
+
+   <servlet-mapping>
+    <servlet-name>MenuServlet</servlet-name>
+    <url-pattern>/menu.txt</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>YYCallbackServlet</servlet-name>
+    <url-pattern>/sso/u8clogin</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+	<servlet-name>validatenumber</servlet-name>
+	<servlet-class>com.corp.servlet.ValidateNumberServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>validatenumber</servlet-name>
+	<url-pattern>/validatenumber.jpg</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>/login/index.jsp</welcome-file>
+<!--    <welcome-file>/index.html</welcome-file>-->
+  </welcome-file-list>
+
+  <error-page>
+	<error-code>404</error-code>
+	<location>/error/error.jsp</location>
+  </error-page>
+
+  <error-page>
+	<error-code>500</error-code>
+	<location>/error/error.jsp</location>
+  </error-page>
+
+  <taglib>
+    <taglib-uri>http://jakarta.apache.org/struts/tags-bean</taglib-uri>
+    <taglib-location>/WEB-INF/struts-bean.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://jakarta.apache.org/struts/tags-html</taglib-uri>
+    <taglib-location>/WEB-INF/struts-html.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://jakarta.apache.org/struts/tags-logic</taglib-uri>
+    <taglib-location>/WEB-INF/struts-logic.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://jakarta.apache.org/struts/tags-tiles</taglib-uri>
+    <taglib-location>/WEB-INF/struts-tiles.tld</taglib-location>
+  </taglib>
+
+  <taglib>
+    <taglib-uri>http://www.shanghaicorp.com/struts/extend</taglib-uri>
+    <taglib-location>/WEB-INF/struts-extend.tld</taglib-location>
+  </taglib>
+
+</web-app>

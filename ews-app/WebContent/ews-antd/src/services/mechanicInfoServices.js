@@ -1,0 +1,29 @@
+import {get, getCommonList} from "../utils/request";
+
+export const getMechanicInfo = async (params, options) => {
+    return await getCommonList("GetMechanicList", params, options);
+};
+
+export const getMechanicWork = async (args) => {
+    return await get("GetDicList4MU", args);
+};
+
+export const getMechanicDelete = async (args) => {
+    return await get("MechanicAdjustment", args);
+};
+
+export const getMechanicAdjustment = async (args) => {
+    return await get("MechanicAdjustment", args);
+};
+
+export const getMechanicSex = async (args) => {
+    return await get("GetDicList4MU", args);
+};
+
+export const getMechanicGrade =async (args) => {
+    return await get("GetDicList4MU",args)
+};
+
+
+
+

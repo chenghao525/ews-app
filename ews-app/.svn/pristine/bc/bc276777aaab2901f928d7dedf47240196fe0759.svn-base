@@ -1,0 +1,11 @@
+
+
+export const LIST_DATA = "LIST_DATA";
+
+
+export const listAction = (list) => {
+    return {
+        type: LIST_DATA,
+        list
+    }
+}

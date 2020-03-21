@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="bookmark" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EWSmis</title>
+    <link rel="stylesheet" href="ews-antd/dist/css/index.css?v=14"/>
+</head>
+<div id="root" style="height: 100%"></div>
+
+<script>
+    // var pathname = location.pathname;
+    // console.log("-0---", location.href);
+    // if (pathname != "/") {
+    //     location = location.protocol + "//" + location.host + "/";
+// }
+</script>
+
+<script src="./ews-antd/dist/index.js?v=8"></script>
+<script src="./ews-antd/dist/vendor.js"></script>
+</body>
+</html>

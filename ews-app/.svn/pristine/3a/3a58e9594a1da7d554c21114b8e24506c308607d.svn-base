@@ -1,0 +1,22 @@
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 8.1//EN" "http://www.bea.com/servers/wls810/dtd/weblogic810-web-jar.dtd">
+
+<weblogic-web-app>
+
+  <session-descriptor>
+    <session-param>
+      <param-name>TimeoutSecs</param-name>
+      <param-value>120000</param-value>
+    </session-param>
+	<session-param>
+      <param-name>cookiename</param-name>
+      <param-value>jsessionidewsapp</param-value>
+	</session-param>
+  </session-descriptor>
+  <context-root>/</context-root>
+  <container-descriptor>
+    <prefer-web-inf-classes>false</prefer-web-inf-classes>
+  </container-descriptor>
+
+
+</weblogic-web-app>
+

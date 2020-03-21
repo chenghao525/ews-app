@@ -1,0 +1,18 @@
+import { LIST_DATA } from "../actions/homeActions";
+
+
+const home = (state = {}, action)=> {
+
+    switch (action.type) {
+        case LIST_DATA:
+            const { list } = action;
+            return {
+                ...state,
+                list
+            }
+        default:
+            return state;
+    }
+}
+
+export default home;

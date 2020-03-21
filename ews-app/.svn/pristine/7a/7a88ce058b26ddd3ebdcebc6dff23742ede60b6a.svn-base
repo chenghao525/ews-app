@@ -1,0 +1,23 @@
+import { HOME_DATA } from "../actions/homeActions";
+
+const defaultState = {
+    data : {},
+    loading : true,
+};
+
+
+const home = (state = defaultState, action)=> {
+    switch (action.type) {
+        case HOME_DATA:
+            const { payload } = action;
+            return {
+                ...state,
+                loading: false,
+                data: payload,
+            }
+        default:
+            return state;
+    }
+}
+
+export default home;

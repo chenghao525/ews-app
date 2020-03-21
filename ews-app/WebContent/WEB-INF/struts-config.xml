@@ -1,0 +1,256 @@
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+
+	<form-beans>
+		<!-- 登陆验证-->
+		<form-bean name="loginForm" type="com.corp.oa.login.LoginForm" />
+
+		<!-- 组织机构-->
+		<form-bean name="orgForm" type="com.corp.oa.system.org.OrgForm" />
+
+		<!-- 用户管理-->
+		<form-bean name="userForm" type="com.corp.oa.system.user.UserForm" />
+
+		<!-- 角色管理 -->
+		<form-bean name="roleForm" type="com.corp.oa.system.role.RoleForm" />
+
+		<!-- 权限管理 -->
+		<form-bean name="rightForm" type="com.corp.oa.system.right.RightForm" />
+
+		<!-- 系统字典项管理 -->
+		<form-bean name="sysDicForm" type="com.corp.oa.system.dictionary.SysDictionaryForm" />
+
+		<!-- 系统参数设置-->
+		<form-bean name="systemForm" type="com.corp.oa.system.system.SysForm" />
+
+		<!-- 用户字典信息管理-->
+		<form-bean name="dictionaryForm" type="com.corp.basic.dictionary.DictionaryForm" />
+
+		<!--GPS信息数据-->
+		<form-bean name="gpsForm" type="com.corp.gps.GpsForm" />
+
+		<!-- 客户基本信息 -->
+		<form-bean name="customForm" type="com.corp.custom.CustomForm" />
+
+		<!-- 服务商基本信息 -->
+		<form-bean name="providerForm" type="com.corp.provider.ProviderForm" />
+
+		<!-- 短信息管理 -->
+		<form-bean name="smsForm" type="com.corp.sms.SmsForm" />
+
+	</form-beans>
+
+	<global-forwards>
+		<forward name="globalErrorPage" path="/error/error.jsp" />
+	</global-forwards>
+
+	<action-mappings>
+
+		<!-- 登陆验证 -->
+		<action input="/login/index.jsp" name="loginForm" path="/login/checklogin"
+		  scope="request" type="com.corp.oa.login.LoginAction" validate="true">
+			<forward name="success" path="/menuui/mainFrame.html"/>
+			<forward name="failure" path="/login/index.jsp?error=1"/>
+			<forward name="tryout" path="/login/index.jsp?error=100"/>
+		</action>
+
+		<!-- 注销 -->
+		<action input="/login/index.jsp" name="loginForm" path="/login/loginout"
+		  scope="request" type="com.corp.oa.login.LoginOutAction" validate="true">
+			<forward name="loginout" path="/login/index.jsp" />
+		</action>
+
+
+		<!-- 系统管理组织机构 -->
+		<action input="/system/org/orgIndex.jsp" name="orgForm" path="/system/org"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/org/orgTree.jsp" />
+			<forward name="b_empfind" path="/system/org/empView.jsp" />
+			<forward name="b_deptfind" path="/system/org/deptView.jsp" />
+			<forward name="b_queryorg" path="/system/org/orgTreeSort.jsp" />
+			<forward name="b_deptshow" path="/system/org/showDuty.jsp" />
+			<forward name="b_savesort" path="/system/org/allTransPageSort.jsp" />
+
+			<forward name="b_deptadd" path="/system/org/deptAdd.jsp"/>
+			<forward name="b_deptedit" path="/system/org/deptAdd.jsp" />
+			<forward name="b_deptsave" path="/system/org/allTransPage.jsp" />
+			<forward name="b_deptdel" path="/system/org/allTransPage.jsp" />
+
+			<forward name="b_dutyadd" path="/system/org/dutyAdd.jsp" />
+			<forward name="b_dutyedit" path="/system/org/dutyAdd.jsp" />
+			<forward name="b_dutydel" path="/system/org/allTransPage.jsp" />
+			<forward name="b_dutysave" path="/system/org/allTransPage.jsp" />
+
+			<forward name="b_empadd" path="/system/org/empAdd.jsp" />
+			<forward name="b_empedit" path="/system/org/empAdd.jsp" />
+			<forward name="b_empdel" path="/system/org/allTransPage.jsp" />
+			<forward name="b_empsave" path="/system/org/allTransPage.jsp" />
+			<forward name="b__back" path="/system/org/allTransPage.jsp" />
+			<forward name="b_pwdsubmit" path="/optSuccess.jsp" />
+
+			<forward name="b_expressmanage" path="/system/org/deptExpressEmpView.jsp" />
+		</action>
+
+		<action input="/system/org/orgIndex.jsp" name="orgForm" path="/expressemp/manage"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/org/deptExpressEmpView.jsp" />
+			<forward name="b_expressadd" path="/system/org/expressEmpAdd.jsp" />
+			<forward name="b_expressedit" path="/system/org/expressEmpAdd.jsp" />
+			<forward name="b_expresssave" path="/system/org/deptExpressEmpView.jsp" />
+			<forward name="b_expressdel" path="/system/org/deptExpressEmpView.jsp" />
+			<forward name="b_expresspreview" path="/system/org/expressPreview.jsp" />
+			<forward name="b_expressAcMang" path="/system/org/expressAccount.jsp" />
+			<forward name="b_expressAcSave" path="/system/org/expressAccount.jsp" />
+		</action>
+
+		<!-- 系统管理组织机构 -->
+		<action input="/system/org/orgIndex.jsp" name="orgForm" path="/system/selexpress"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/org/expressEmpSel.jsp" />
+		</action>
+
+		<!-- 系统管理用户管理 -->
+		<action input="/system/user/user.jsp" name="userForm" path="/system/user"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/user/userList.jsp" />
+			<forward name="b_see" path="/system/user/userView.jsp" />
+			<forward name="b_edit" path="/system/user/userEdit.jsp" />
+			<forward name="b_del" path="/system/user/userList.jsp"/>
+			<forward name="b_save" path="/system/user/userList.jsp"/>
+			<forward name="b_resetpwd" path="/system/user/userList.jsp"/>
+		</action>
+
+		<!-- 菜单-->
+		<action input="/menu/menu.jsp" name="menuForm" path="/menu/menu"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/menu/menu.jsp" />
+		</action>
+
+
+		<!-- 角色列表 -->
+		<action
+		   input="/system/role/roleList.jsp" name="roleForm" path="/role/rolelist"
+		   scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_add" path="/system/role/setRoleRight.jsp"/>
+			<forward name="b_query" path="/system/role/roleList.jsp"/>
+			<forward name="b_del" path="/role/rolelist.do?b_query=true"/>
+		</action>
+
+			<!-- 角色查询和角色修改 -->
+		<action
+		   input="/system/role/setRoleRight.jsp" name="roleForm" path="/role/roleedit"
+		   scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_add" path="/system/role/setRoleRight.jsp"/>
+			<forward name="b_query" path="/system/role/roleList.jsp"/>
+			<forward name="b_del" path="/system/role/roleList.jsp"/>
+			<forward name="b_submit" path="/system/role/roleList.jsp" />
+			<forward name="b_queryfind" path="/system/role/setRoleRight.jsp"/>
+			<forward name="b_queryedit" path="/system/role/setRoleRight.jsp"/>
+			<forward name="b__back" path="/role/roleedit.do?b_query=true" redirect="true"/>
+		</action>
+
+		<!-- 系统字典项管理 -->
+		<action
+		   input="/system/dictionary/dicList.jsp" name="sysDicForm" path="/system/sysdictionary"
+		   scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/dictionary/dicList.jsp" />
+			<forward name="b_add" path="/system/dictionary/dicAdd.jsp" />
+			<forward name="b_del" path="/system/dictionary/dicList.jsp" />
+			<forward name="b_edit" path="/system/dictionary/dicAdd.jsp" />
+			<forward name="b_save" path="/system/dictionary/dicList.jsp" />
+		</action>
+
+		<!-- 角色控制权限 -->
+		<action
+		   input="/system/right/setEmpRightByRole.jsp" name="rightForm" path="/right/rightsetbyrole"
+		   scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/right/setEmpRightByRole.jsp" />
+			<forward name="b_save" path="/system/right/setEmpRightByRole.jsp"/>
+		</action>
+
+
+		<!-- 系统管理日志管理 -->
+		<action input="/system/log/log.jsp" name="logForm" path="/system/log"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/log/log.jsp" />
+			<forward name="b_exp" path="/system/log/export.jsp" />
+			<forward name="b_del" path="/system/log/export.jsp" />
+			<forward name="b_expdata" path="/system/log/log.jsp" />
+			<forward name="b_deldata" path="/system/log/log.jsp" />
+		</action>
+
+		<!-- 选择人员信息 -->
+		<action input="/share/empSelFrame.html" name="empSelForm" path="/share/empsel"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/share/empTree.jsp" />
+			<forward name="b_dept" path="/share/deptTree.jsp" />
+		</action>
+
+
+		<!-- 菜单-->
+		<action input="/xc/menu/xcmenu.jsp" name="xcmenuForm" path="/xcmenu/xcmenu"
+			  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+				<forward name="b_query" path="/xc/menu/xcmenu.jsp" />
+		</action>
+
+		<!-- 系统参数设置-->
+		<action  input="/system/system/sysInfoEdit.jsp" name="systemForm" path="/system/system"
+		   scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/system/system/sysInfoEdit.jsp" />
+			<forward name="b_save" path="/system/system.do?b_query=true"  redirect="true"/>
+		</action>
+
+		<!--GPS数据查询-->
+		<action input="/login/index.jsp" name="gpsForm" path="/gps/gps"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/gps/gpsSearch.jsp"/>
+			<forward name="b_monitor" path="/gps/gpsMonitor.jsp"/>
+			<forward name="b_daytrack" path="/gps/gpsDayTrack.jsp"/>
+			<forward name="b_manage" path="/gps/mobileList.jsp"/>
+			<forward name="b_mobileadd" path="/gps/mobileAdd.jsp"/>
+			<forward name="b_mobileedit" path="/gps/mobileEdit.jsp"/>
+			<forward name="b_mobiledel" path="/gps/mobileList.jsp"/>
+		</action>
+
+		<!-- 客户信息管理 -->
+		<action input="/login/index.jsp" name="customForm" path="/custom/custom"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/custom/customList.jsp"/>
+			<forward name="b_add" path="/custom/customAdd.jsp"/>
+			<forward name="b_save" path="/custom/customList.jsp"/>
+			<forward name="b_see" path="/custom/customAdd.jsp"/>
+			<forward name="b_edit" path="/custom/customAdd.jsp"/>
+			<forward name="b_del" path="/custom/customList.jsp"/>
+		</action>
+
+		<!-- 客户信息管理 -->
+		<action input="/login/index.jsp" name="customForm" path="/custom/custom/sel"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/custom/customSel.jsp"/>
+		</action>
+
+		<!-- 服务商信息管理 -->
+		<action input="/login/index.jsp" name="providerForm" path="/provider/provider"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/provider/providerList.jsp"/>
+			<forward name="b_add" path="/provider/providerAdd.jsp"/>
+			<forward name="b_save" path="/optSuccess.jsp"/>
+			<forward name="b_savepop" path="/optSuccess.jsp"/>
+			<forward name="b_see" path="/provider/providerAdd.jsp"/>
+			<forward name="b_edit" path="/provider/providerAdd.jsp"/>
+			<forward name="b_del" path="/provider/providerList.jsp"/>
+		</action>
+
+		<!-- 短信息管理 -->
+		<action input="/login/index.jsp" name="smsForm" path="/sms/sms"
+		  scope="request" type="com.corp.frame.action.FrameAction" validate="true">
+			<forward name="b_query" path="/sms/smsList.jsp"/>
+			<forward name="b__add" path="/sms/smsAdd.jsp"/>
+			<forward name="b_save" path="/optSuccess.jsp"/>
+		</action>
+
+	</action-mappings>
+
+	<message-resources parameter="com.ApplicationResources" />
+
+</struts-config>

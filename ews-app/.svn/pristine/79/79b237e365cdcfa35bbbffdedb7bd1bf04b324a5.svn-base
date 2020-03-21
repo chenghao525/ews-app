@@ -1,0 +1,100 @@
+.ant-advanced-search-form {
+    padding: 10px;
+    background: #fbfbfb;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+}
+
+.ant-advanced-search-form .ant-form-item {
+    display: flex;
+}
+
+.ant-advanced-search-form .ant-form-item-control-wrapper {
+    flex: 1;
+}
+
+.details-form {
+    flex: 1;
+}
+.details-form div {
+    float: left;
+}
+/*table表格列伸缩开始*/
+.react-resizable {
+    position: relative;
+    background-clip: padding-box;
+}
+.react-resizable-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    bottom: 0;
+    right: -5px;
+    cursor: col-resize;
+    z-index: 1;
+}
+/*列伸缩结束*/
+/*工单详情页面开始*/
+.gutter-example .ant-row{
+    /*background: transparent;*/
+    /*border: 1px solid #1b6116;*/
+    /*margin: 5px 0;*/
+    font-size: 12px;
+}
+.gutter-example .ant-col{
+    min-height: 33px;
+}
+.gutter-examplepo .ant-col{
+    min-height: 50px;
+}
+.gutter-box {
+    background: #f7f7f7;
+    text-align: right;
+    padding: 5px 0;
+    border: 1px solid #999999;
+}
+.gutter-boxtwo {
+    text-align: center;
+    padding: 5px 0;
+    border: 1px solid #999999;
+}
+.table-example .ant-table{
+    min-height: 300px;
+    background-color: #7ba4e0;
+    font-size: 12px;
+    text-align: center;
+}
+/*.ant-pagination > paginationnow{*/
+    /*background-color: #2ea125;*/
+    /*display: none;*/
+/*}*/
+.modalstyle{
+    max-height: 450px;
+}
+
+.workmodalstyle{
+    max-height: 700px;
+}
+
+.ant-tabs-bar{
+    margin: 0px;
+}
+.carimage{
+    width: 50%;
+}
+/*工单详情页面结束*/
+.dynamic-delete-button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #999;
+    transition: all 0.3s;
+}
+.dynamic-delete-button:hover {
+    color: #777;
+}
+.dynamic-delete-button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

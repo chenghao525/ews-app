@@ -1,0 +1,453 @@
+import moment from "moment";
+import { loginInfo } from "./storage";
+import "moment/locale/zh-cn";
+
+moment.locale("zh-cn");
+
+/**
+ * 判断一个对象是否为空
+ */
+
+export const isNvl = (obj) => {
+    const type = objType(obj);
+    if (type == "Null" || type == "Undefined") {
+        return true;
+    } else if (type == "Object") {
+        let isNull = true;
+        for(let key in obj) {
+            isNull =  false;
+        }
+        return isNull;
+    } else {
+        return obj.length == 0;
+    }
+};
+
+/**
+ * 用一个指定的值代替原来的值，如果原来的值为空
+ */
+export const nvl = (val, rep) => {
+    return isNvl(val) ? rep : val;
+};
+/**
+ * 判断一个form是否为空
+ * @param values
+ * @returns {boolean}
+ */
+export const formIsNvl = (values = {}) => {
+    if (isNvl(values)) return true;
+    for (let key in values) {
+        if (!isNvl(values[key])) {
+            return false;
+        }
+    }
+    return true;
+};
+/**
+ * 去除掉空值并将日期等做转换
+ * @param values
+ * @returns {{}}
+ */
+export const getSearchForm = (values, options={}) => {
+    if (isNvl(values)) return {};
+    const json = {};
+    for (let key in values) {
+        let val = values[key];
+        if (!isNvl(val)) {
+            let format = options[key];
+            if (isNvl(format)) {
+                format = "YYYY-MM-DD HH:mm";
+            }
+            const result = momentFormat(val, format);
+            // 处理是多个值的情况
+            if (objType(result) == "Array") {
+                if (result.length == 1) {
+                    json[key] = result[0];
+                } else {
+                    json[`${key}_ST`] = result[0];
+                    json[`${key}_ED`] = result[1];
+                }
+            } else {
+                json[key] = result;
+            }
+        }
+    }
+    return json;
+};
+/**
+ * 将moment 对象格式化
+ * @param val
+ * @returns {string|{_d}|*}
+ */
+export const momentFormat = (val, format) => {
+    const type = objType(val);
+    if (type === "Object" || type === "Array") {
+        let arr = type == "Object" ? [val] : val;
+        const result = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i]._isAMomentObject) {
+                 result.push(moment(arr[i]).format(format));
+            }
+        }
+        if (result.length > 0) {
+            return result;
+        }
+    }
+    return val;
+};
+/**
+ * 判断一个对象的类型
+ * @param obj
+ * @returns {string} Null, Undefined, Object, Array等
+ */
+export const objType = (obj) => {
+    const type = Object.prototype.toString.call(obj);
+    return type.match(/[A-Z][a-z]+/)[0];
+};
+
+/**
+ * 根据给定的字符串创建一个Moment对象
+ * @param val
+ * @param format
+ * @returns {moment.Moment}
+ */
+export const dateOfMoment = (val, format="YYYY-MM-DD HH:mm") => {
+    return moment(val, format);
+};
+
+/**
+ * 请求的通用参数
+ * @param pagination
+ * @param sorter
+ * @returns {{pageIndex: number, sortOrder: (*|string), sortField: (*|string), pageSize: (*|number)}}
+ */
+export const getListCommonOptions = (pagination = {}, sorter = {}) => {
+    const pageIndex = pagination.current;
+    const pageSize = pagination.pageSize;
+    const sortField = sorter.sortField;
+    const sortOrder = sorter.sortOrder;
+
+    return {
+        pageIndex: pageIndex ? pageIndex - 1 : 0,
+        pageSize: pageSize || 10,
+        sortField: sortField || "",
+        sortOrder: sortOrder || ""
+    }
+};
+/*
+* 登录账号的类型判断，
+* 21位普通登录账号，
+* 20为管理者权限
+* */
+export const isManager = loginInfo().EMP_TYPE == "20";
+export const isNormal  = loginInfo().EMP_TYPE == "21";
+
+/**
+ * 计算当前月往前的12个月
+ * @param obj
+ * @returns  Array等
+ */
+export const getPrevious12MonthsOfTheCurrent = () => {
+    let currentDt = new Date();
+    let month = currentDt.getMonth() + 1, year = currentDt.getFullYear();
+    let dt  = year + "-" + (month < 10 ? '0' + month : month);
+    let dtArray = [{id: dt, text: dt}];
+
+    for (var i = 0; i < 11; i++) {
+        currentDt.setMonth(month - 2);
+        month = currentDt.getMonth() + 1;
+        year = currentDt.getFullYear();
+
+        dt  = year + "-" + (month < 10 ? '0' + month : month);
+        dtArray.push({id: dt, text: dt});
+    }
+    return dtArray;
+};
+
+/**
+ * 处理月年报表数据
+ * @param obj
+ * @returns  Array等
+ */
+export const formatYearData = (payload,searchdata,ismonth) => {
+    let series = payload.series;
+    console.log("11111", payload);
+    let paint={};
+    let merchanic={};
+    let pieSeries=[];
+    for(let i=0;i<series.length;i++){
+        if(series[i].REWORK_TYPE=='910') {
+            paint.name = "油漆版面";
+            paint.value = parseInt(series[i].shf_count);
+        }else{
+            merchanic.name="返工版面";
+            merchanic.value=parseInt(series[i].shf_count);
+        }
+    }
+    pieSeries.push(paint);
+    pieSeries.push(merchanic);
+    console.log("3333", pieSeries);
+
+    let tableSeries=payload.tableSeries;
+    let cSeries=[];
+    let pdata=[];
+    pdata=[].concat(payload.x);
+    let mdata=[];
+    mdata=[].concat(payload.x);
+    let pobj={};
+    let mobj={};
+    for(let i=0;i<pdata.length;i++) {
+        pdata[i]=0;
+        for (let j = 0; j < tableSeries.length; j++) {
+            if(ismonth==1) {
+                if (parseInt(tableSeries[j].day.substring(8, 10)) - 1 == i) {
+                    if (tableSeries[j].REWORK_TYPE == '910') {
+                        pdata[i] = parseInt(tableSeries[j].count);
+                    }
+                }
+            }else{
+                if (parseInt(tableSeries[j].day.substring(5, 7)) - 1 == i) {
+                    if (tableSeries[j].REWORK_TYPE == '910') {
+                        pdata[i] = parseInt(tableSeries[j].count);
+                    }
+                }
+            }
+        }
+    }
+
+    for(let i=0;i<mdata.length;i++) {
+        mdata[i]=0;
+        for (let j = 0; j < tableSeries.length; j++) {
+            if(ismonth==1) {
+                if (parseInt(tableSeries[j].day.substring(8, 10)) - 1 == i) {
+                    if (tableSeries[j].REWORK_TYPE != '910') {
+                        mdata[i] = parseInt(tableSeries[j].count);
+                    }
+                }
+            }else{
+                if (parseInt(tableSeries[j].day.substring(5, 7)) - 1 == i) {
+                    if (tableSeries[j].REWORK_TYPE != '910') {
+                        mdata[i] = parseInt(tableSeries[j].count);
+                    }
+                }
+            }
+        }
+    }
+
+    pobj.name = "油漆版面";
+    pobj.data = pdata;
+    mobj.name="返工版面";
+    mobj.data = mdata;
+    if(isNvl(searchdata.PAINT_MAKER_ID) && isNvl(searchdata.MECHANIC_ID)){
+        pobj.type = 'bar';
+        mobj.type = 'bar';
+    }else{
+        pobj.type = 'line';
+        mobj.type = 'line';
+    }
+    cSeries.push(pobj);
+    cSeries.push(mobj);
+    console.log("222222", cSeries);
+
+    let sumarry=[];
+    for(let i=0;i<pdata.length;i++){
+        for(let j=0;j<mdata.length;j++){
+            if(i==j){
+                let sum=pdata[i]+mdata[j];
+                sumarry.push(sum);
+            }
+
+        }
+    }
+    let account=0;
+    for(let i=0;i<sumarry.length;i++){
+        account+=sumarry[i];
+    }
+    sumarry.push(account);
+    return {
+        monthdata: payload,
+        pieSeries: pieSeries,
+        cSeries: cSeries,
+        sumarry: sumarry
+    };
+};
+
+/**
+ * 人效统计生成月年饼图报表
+ * @param obj
+ * @returns  Array等
+ */
+export const pieEcharts = (myChart, pieSeries, typeValue ,ismonth) => {
+    myChart.clear();
+    myChart.setOption({
+        title : {
+            text:  ismonth==1?"人效统计月度报表"+ "（" + typeValue + "）":"人效统计年度报表" + "（" + typeValue + "）",
+            x:'center'
+        },
+        //color: ['#7cb5ec','#ffc0cb'],
+        //tooltip: {pintFormat: '{series.name}: <b>{point.percentage:.1f}%'},
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'left',
+            data:['返工版面','油漆版面']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true,
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                            max: 1548
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'面数',
+                type:'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data: pieSeries||[],
+                itemStyle:{
+                    normal:{
+                        label:{
+                            show: true,
+                            formatter: '{b} : {c} ({d}%)'
+                        },
+                        labelLine :{show:true}
+                    }
+                }
+            }
+        ]
+
+    });
+    return true;
+};
+
+/**
+ * 人效统计生成月年柱状图和折线图报表
+ * @param obj
+ * @returns  Array等
+ */
+export const barAndlineEcharts = (myChart, monthdata, cSeries, typeValue,ismonth) => {
+    myChart.clear();
+    myChart.setOption({
+        //普通折线图
+        title : {
+            text: ismonth==1?"人效统计月度报表" + "（" + typeValue + "）":"人效统计年度报表" + "（" + typeValue + "）",
+            x:'center'
+        },
+        //color: ['#7cb5ec','#ffc0cb'],
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['返工版面','油漆版面'],
+            x:'left'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                data : monthdata.x||[],
+                name: ismonth==1?'日':'月'
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : cSeries||[]
+    });
+    return true;
+};
+
+/**
+ * 人效统计生成月年柱状图和折线图报表
+ * @param obj
+ * @returns  Array等
+ */
+export const buildTableEcharts = (monthdata, cSeries, pieSeries, sumarry, ismonth) => {
+    let trs = '<tr>';
+    // let t=setInterval(()=>{
+    //     clearInterval(t);
+        const x = monthdata.x || [];
+        for (var i = 0; i <= x.length; i++) {
+            trs += '<td bgcolor="#CCE8EB" align="center" style="font-weight:700;">' + (i == 0 ? (ismonth==1?'订单类型(日)':'订单类型(月)') : i) + '</td>';
+        }
+        trs += '<td bgcolor="#CCE8EB" align="center" style="font-weight:700;">' + (ismonth==1?'月度累计':'年度累计') + '</td>';
+        trs += "</tr>";
+        for (var i = 0; i <cSeries.length; i++) {
+            var it = cSeries[i];
+
+            trs += '<tr><td align="center" style="font-weight:700;">' + it.name + '</td>';
+
+            for (var j = 0; j < it.data.length; j++) {
+                var dt = it.data[j];
+                trs += '<td>' + dt + '</td>';
+
+            }
+
+            for (var j = 0; j < pieSeries.length; j++) {
+                var it = pieSeries[j];
+                if (i == j) {
+                    if (it.value == undefined) {
+                        trs += '<td>0</td>';
+                    } else {
+                        trs += '<td>' + it.value + '</td>';
+                    }
+                }
+            }
+            trs += '</tr>';
+
+        }
+
+        trs += '<tr><td align="center" style="font-weight:700;">' + (ismonth==1?'每日总量':'每月总量') + '</td>';
+        for (var j = 0; j < sumarry.length; j++) {
+            trs += '<td>' + sumarry[j] + '</td>';
+        }
+        trs += '</tr>';
+
+//    },0);
+    return trs;
+};
+
+/**
+ * 获取指定年月的最后一天
+ * @param year
+ * @param month
+ * @return
+ */
+export const getLastDayOfMonth=(currnt)=> {
+    var d = moment(currnt,"YYYY-MM"); //按照指定的年月字符串和格式解析出一个moment的日期对象
+    var firstDate = d.startOf("month"); //通过startOf函数指定取月份的开始即第一天
+    var lastDate = d.endOf("month"); //通过startOf函数指定取月份的末尾即最后一天
+    return lastDate;
+}

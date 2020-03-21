@@ -1,0 +1,111 @@
+import React, {Component} from 'React';
+import {List, Card, Button, Modal} from 'antd';
+import "../../css/App.css";
+import { connect } from 'react-redux';
+import SingleFormItem from "../../component/SingleFormItem";
+
+import {getCarBrandListsAction, getRoPerfectAction} from "../../store/actions/repairOrderActions";
+import PerfectRODetails from  "../../component/PerfectRODetails";
+import {adjusterAction, mechanicsAction} from "../../store/actions/generalActions";
+import {mechanicWorkAction} from "../../store/actions/mechanicInfoActions";
+
+
+const mapStateToProps = state => {
+    return {
+        data: state.ro.data,
+        pagination: state.ro.pagination,
+        loading: state.ro.loading,
+        datape:state.ro.datape,//待完善工单列表
+        datacb: state.ro.datacb,//车辆品牌
+        adjuster:state.base.adjuster,//调漆员
+        mechanics:state.base.mechanics,//服务技师
+        mechanicWork:state.base.mechanicWork,//工单状态
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        // load: (params = {}, panigation = {}, sorter = {}) => {
+        //     dispatch(getROLists(params, panigation, sorter));
+        // },
+        //待完善工单列表
+        loadRoPerfect: ()=>{
+            dispatch(getRoPerfectAction({S_REPAIR_STATE:"no"}));
+        },
+        //车辆品牌接口
+        loadCarBrand: () => {
+            dispatch(getCarBrandListsAction({}));
+        },
+        //服务技师
+        loadSeverMechanic: ()=>{
+            dispatch(mechanicsAction({work:""}));
+        },
+        //调漆员
+        loadTqAdjusterAction: () => {
+            dispatch(adjusterAction({work:'900'}));
+        },
+        //工单状态
+        loadmechanicWork: ()=>{
+            dispatch(mechanicWorkAction({infoType:51}));
+        },
+    }
+}
+
+class NewTobePerfectRO extends Component{
+
+    state = {
+        modalVisible: false,
+        details: {},
+        // datacb:[],
+    }
+
+    componentDidMount(){
+        this.props.loadRoPerfect();//待完善工单列表
+        this.props.loadCarBrand();//车辆品牌
+        this.props.loadSeverMechanic();//服务技师
+        this.props.loadTqAdjusterAction();//调漆员
+        this.props.loadmechanicWork();//工单状态
+    }
+    choooseoneclick=(values)=>{
+        console.log('55555555555');
+        console.log(values);
+        this.setState({
+            modalVisible: true,
+            details: values,
+        });
+
+    }
+    modalHandle = () => {
+        Modal.destroyAll();
+        this.setState({
+            modalVisible: false,
+        });
+
+    }
+    render(){
+        const {datape,datacb,adjuster,mechanics,mechanicWork} = this.props;
+        const {modalVisible,details} = this.state;
+        return(
+            <div>
+                <List
+                    grid={{ gutter: 16, column: 4 }}
+                    dataSource={datape}
+                    renderItem={item => (
+                        <List.Item>
+                            <Card title={item.RO_NUMBER} onClick={() => this.choooseoneclick(item)} actions={[<a>待完善</a>]}>Card content</Card>
+                        </List.Item>
+                    )}
+                    >
+                </List>,
+                <Modal visible={modalVisible} width={970} className="modalstyle" title="工单详情"
+                       onCancel={this.modalHandle} onOk={this.modalHandle} footer={null}>
+
+                    <PerfectRODetails modalHandle={this.modalHandle} details={details} datacb={datacb||[]} mechanics={mechanics||[]} adjuster={adjuster||[]} mechanicWork={mechanicWork||[]}/>
+                </Modal>
+
+            </div>
+        )
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(NewTobePerfectRO);

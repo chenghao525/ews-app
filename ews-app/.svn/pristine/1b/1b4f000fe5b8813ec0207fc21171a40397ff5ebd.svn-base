@@ -1,0 +1,54 @@
+import {ADD_DATA, DEL_SMDATA, DEL_BMDATA, RO_PERFECT,CAR_BRAND} from "../actions/repairOrderActions";
+
+const defaultState = {
+    data: [],
+    loading: true,
+    pagination: {
+        pageSize: 5
+    }
+};
+
+const ro = (state = defaultState, action) => {
+    // const { payload } = action;
+    switch (action.type) {
+        case ADD_DATA:
+
+            const data = action.payload.data || [];
+            const total = action.payload.total || 0;
+            return {
+                ...state,
+                loading: false,
+                data,
+                total
+            };
+        case DEL_SMDATA:
+            const datasm = action.payload.data || [];
+            return {
+                ...state,
+                datasm
+            }
+        case DEL_BMDATA:
+            const databm = action.payload.data || [];
+            return {
+                ...state,
+                databm
+            }
+        case RO_PERFECT:
+            const datape = action.payload || [];
+            return {
+                ...state,
+                datape
+            }
+        case CAR_BRAND:
+            const datacb = action.payload || [];
+            return {
+                ...state,
+                datacb
+            }
+
+        default:
+            return state;
+    }
+};
+
+export default ro;

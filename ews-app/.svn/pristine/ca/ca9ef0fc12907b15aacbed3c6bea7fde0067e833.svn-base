@@ -1,0 +1,65 @@
+import React, {Component} from "react";
+import {Modal} from "antd";
+import WrappedAddCostForm from "./AddCostForm";
+
+
+class AddCostModel extends Component {
+    state = {
+        ModalText: 'Content of the modal',
+        visible: false,
+        confirmLoading: false,
+    };
+
+    //点击对话框OK按钮触发的事件
+    handleOk = (e) => {
+        this.setState({
+            visible: false,
+        });
+    };
+
+
+    //点击对话框Cancel按钮触发的事件
+    handleCancel = () => {
+        this.formRef.handleCancel();
+        this.setState({
+            visible: false,
+        });
+    };
+
+
+    shouldComponentUpdate(nextProps, nextState){
+        if(nextProps.visible !== this.state.visible || nextState.visible !== this.state.visible){
+            this.state.visible=nextProps.visible;
+            return true
+        }
+        return false;
+    }
+
+    showModel = () =>{
+        this.setState({visible:true});
+    };
+
+    componentDidMount(){
+        this.props.onRef(this);
+    }
+
+    render() {
+        const {visible} = this.state;
+
+        return (
+            <div>
+                <Modal title="添加单钣面月成本"
+                       visible={visible}
+                       onOk={this.handleOk}
+                       onCancel={this.handleCancel}
+                       okText="确认"
+                       cancelText="取消"
+                >
+                    <WrappedAddCostForm {...this.props} wrappedComponentRef={(form) => this.formRef = form}/>
+                </Modal>
+            </div>
+        );
+    }
+}
+
+export default AddCostModel

@@ -1,0 +1,14 @@
+import { combineReducers } from "redux";
+import base from "./base";
+import home from "./home";
+import ro from "./repairOrder";
+
+
+// 将所有的reducers组合
+const reducers = combineReducers({
+    base,
+    home,
+    ro
+});
+
+export default reducers;

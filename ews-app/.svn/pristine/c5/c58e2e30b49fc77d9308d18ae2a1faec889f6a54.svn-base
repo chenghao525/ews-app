@@ -1,0 +1,14 @@
+import { getU8CFailedList } from "../../services/getU8CFailedServices";
+import { getListCommonOptions } from "../../utils/G";
+
+export const ADD_DATA = "ADD_DATA";
+
+export const getU8CLists = (params, pagination, sorter) => {
+    const options = getListCommonOptions(pagination, sorter);
+    const response = getU8CFailedList(params, options);
+
+    return {
+        type: ADD_DATA,
+        payload: response
+    }
+};

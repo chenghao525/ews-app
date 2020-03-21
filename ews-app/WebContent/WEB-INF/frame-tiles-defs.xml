@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+<tiles-definitions >
+<!-- Master Layout definition  -->
+<definition name="test.tiles.template" 
+  path="/test/tiles/template/template.jsp">
+      <put name="title"  value="Welcome to Foo Bar Travels" />
+      <put name="header" value="/test/tiles/template/header.jsp" />
+      <put name="footer" value="/test/tiles/template/footer.jsp" />
+      <put name="body"   value="" />
+</definition>
+
+  <!-- Definition for Flight Search Page -->
+<definition name="test.tiles.listUser" 
+  extends="test.tiles.template">
+      <put name="body"   value="/test/tiles/listUser.jsp" />
+</definition>
+<definition name="test.tiles.register" 
+  extends="test.tiles.template">
+      <put name="body"   value="/test/tiles/register.jsp" />
+</definition>
+
+<definition name="tiles.myportal.template" 
+  path="/test/tiles/template/template.jsp">
+      <put name="title"  value="Welcome to Foo Bar Travels" />
+      <put name="header" value="/test/tiles/template/header.jsp" />
+      <put name="footer" value="/test/tiles/template/footer.jsp" />
+      <put name="body"   value="" />
+</definition>
+
+</tiles-definitions>

@@ -1,0 +1,129 @@
+import React, { Component } from "react";
+import { Form, Row, Col, Input, Button, Select, Icon, DatePicker, message } from "antd";
+import { formIsNvl, getSearchForm, isManager} from "../utils/G";
+import locale from "antd/es/date-picker/locale/zh_CN";
+import moment from "moment";
+import "moment/locale/zh-cn"
+
+
+moment.locale("zh-cn");
+
+const { Option } = Select;
+const { RangePicker } = DatePicker;
+
+
+
+class U8CSearchForm extends Component {
+
+    state = {
+        expand: false,
+        loading: true,
+    };
+
+    handleSearch = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (formIsNvl(values)) {
+                message.warning("请输入需要查询的值");
+                return;
+            }
+            const json = getSearchForm(values, {
+                S_MIXED_DATE: "YYYY-MM-DD"
+            });
+            this.props.search(json);
+
+        });
+
+    };
+    handleReset = () => {
+        this.props.form.resetFields();
+    };
+    syncForm = () => {
+        this.props.syncForm();
+    };
+    toggle = () => {
+        const { expand } = this.state;
+        this.setState({ expand: !expand })
+    };
+    getSelectedOptions() {
+        const children = this.props.vendors.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+    getFields() {
+        const count = this.state.expand ? 10 : 6;
+        const { getFieldDecorator } = this.props.form;
+        const children = [];
+        for (let i = 0; i < 10; i++) {
+            children.push(
+                <Col span={4} key={i} style={{ display: i < count ? 'block': 'none', padding: '0 10px'}}>
+                    <Form.Item label={`Field ${i}`}>
+                        {getFieldDecorator(`field-${i}`, {
+                            rules: [
+                                {
+                                    required: false,
+                                    message: 'Input something!',
+                                },
+                            ]
+                        })(<Input placeholder="placeholder"/>)}
+                    </Form.Item>
+
+                </Col>
+            )
+        }
+        return children;
+    }
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const rangeConfig = [{type: 'array', required: true, message: 'Please select time!' }];
+        console.log('555555555',isManager);
+        return (
+            <Form className="ant-advanced-search-form" onSubmit={this.handleSearch}  >
+                <Row span={24} style={{marginTop:'5px'}}>
+                    <Col span={8}>
+                        <Button  type="primary" style={{ marginLeft: 8 }} onClick={this.syncForm} size="small">再次同步</Button>
+                        <Button type="primary" style={{ marginLeft: 8 }} htmlType="submit" size="small">刷新</Button>
+                    </Col>
+                </Row>
+                <Row gutter={24} style={{paddingTop: '5px',paddingLeft: '5px',paddingRight: '5px'}}>
+                    {isManager ?
+                        (<Col span={4} key={'s_1'}>
+                            <Form.Item label={"门店"} key={'p_s'}>
+                                {getFieldDecorator(`S_PROV_SID`, {
+                                    rules: [
+                                        {
+                                            required: false,
+                                            message: 'Input something!'
+                                        }
+                                    ]
+                                })(<Select style={{width: 150}} key={'s_c'} allowClear={true}
+                                           size="small">{this.getSelectedOptions()}</Select>)}
+                            </Form.Item>
+                        </Col> ): null}
+
+                    <Col span={6} key={'s_5'}>
+                        <Form.Item label={"调色时间"}>
+                            {getFieldDecorator(`S_MIXED_DATE`, rangeConfig)(<RangePicker locale={locale} size="small" />)}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={4} style={{ textAlign: 'left',marginTop:'7px',marginLeft:'10px' }} key={'s_4'} >
+                        <Button type="primary" htmlType="submit"  size="small" >
+                            查询
+                        </Button>
+                        <Button style={{ marginLeft: 8 }} onClick={this.handleReset} size="small"  >
+                            重置
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        );
+    }
+
+}
+export default Form.create({name: "advanced_search"})(U8CSearchForm);
+

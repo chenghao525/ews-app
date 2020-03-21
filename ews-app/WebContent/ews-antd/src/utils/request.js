@@ -1,0 +1,102 @@
+import Axios from "axios";
+import { isNvl } from "./G";
+import { serverURL, serverCommonListURL } from "../configs/config";
+import { loginInfo } from "./storage";
+
+
+const headers = {
+    'Content-Type': "application/x-www-form-urlencoded"
+};
+
+const axiosOfGet = (url) => {
+    return Axios.get(url, {
+        headers: headers,
+    })
+};
+
+const axiosOfPost = (url, params) => {
+    const param = 'data=' + JSON.stringify(params);
+    return Axios.post(url, param, {
+        headers: headers,
+    });
+};
+// 处理一些东西
+const composeUrl = (baseUrl, server) => {
+    return baseUrl + server;
+};
+
+// 将参数拼接成&key=value
+const formEncoding = (options) => {
+    if (isNvl(options)) {
+        return "";
+    }
+    // 通用参数
+    const login = loginInfo();
+    options = {
+        ...options,
+        SID: login.SID,
+        PROV_SID: login.EMP_TYPE == "21" ? login.PROV_SID : "",
+        //PROV_SID:login.PROV_SID,
+        EMPNAME: login.EMPNAME,
+        U8C_CODE: login.U8C_CODE,
+        UserID: login.EMPID,
+        EMP_TYPE: login.EMP_TYPE
+    }
+    let buf = "";
+    for (let key in options) {
+        buf += "&" + key + "=" + options[key];
+    }
+
+    return buf;
+};
+
+const checkStatus = response => {
+    const status = response.status;
+    if (status >= 200 && status < 300) {
+        return response;
+    }
+    const error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+};
+
+export const get = async (server, params) => {
+
+    let url = composeUrl(serverURL, server);
+    url = url + formEncoding({data: JSON.stringify(params)});
+    const response = await axiosOfGet(url);
+    checkStatus(response);
+    console.log("输出get数据：：：");
+    console.log(response);
+    return new Promise(resolve => {
+        resolve && resolve(response.data)
+    });
+};
+
+export const post = async (server, params) => {
+    const url = /^https?:\/\//.test(server) ? server : composeUrl(serverURL, server);
+    const response = await axiosOfPost(url, params);
+    checkStatus(response);
+    // console.log("输出post数据：：：" + JSON.parse(response));
+    return new Promise(resolve => {
+        resolve && resolve(response)
+    });
+};
+
+export const getCommonList = async (server, params, options) => {
+
+    let url = composeUrl(serverCommonListURL, server);
+
+    options["data"] = JSON.stringify(params);
+    url = url + formEncoding(options);
+
+    console.log("url[[[==:",url);
+
+    const response = await axiosOfGet(url);
+    checkStatus(response);
+    console.log("输出common数据：：：");
+    console.log(response);
+    return new Promise(resolve => {
+        resolve && resolve(response.data)
+    });
+};

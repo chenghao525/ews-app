@@ -1,0 +1,27 @@
+import { ADD_DATA } from "../actions/repairOrderActions";
+
+const defaultState = {
+    data: [],
+    loading: true,
+    pagination: {
+        pageSize: 50
+    }
+}
+
+const ro = (state = defaultState, action) => {
+    switch (action.type) {
+        case ADD_DATA:
+            const { payload } = action;
+            const data = payload.data || [];
+            return {
+                ...state,
+                loading: false,
+                data
+            }
+
+        default:
+            return state;
+    }
+}
+
+export default ro;

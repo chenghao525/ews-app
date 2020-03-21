@@ -1,0 +1,175 @@
+import React from "react";
+import {Form,Input, Select} from 'antd';
+
+const { Option } = Select;
+
+
+class addNewMechanicForm extends React.Component {
+    state = {
+      dataFromRow : this.props.dataFromRow,
+    };
+
+    getItemsValue = ()=>{    //3、自定义方法，用来传递数据（需要在父组件中调用获取数据）
+        const values= this.props.form.getFieldsValue();       //4、getFieldsValue：获取一组输入控件的值，如不传入参数，则获取全部组件的值
+        return values;
+    };
+
+    handleSubmit = e => {
+         let result = "";
+         this.props.form.validateFields((err, values) => {
+            if (err) {
+                result = "has err";
+            }
+            else{
+                result = values;
+            }
+         });
+        return result;
+    };
+
+    handleCancel = (e) => {
+        this.props.form.resetFields(e)
+    };
+
+    getSelectedOptions(optionArray){
+        const children =optionArray.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+
+    validateTel = (rule,value,callback)=>{
+        if(value.length!==11){
+            callback('请输入正确的电话号码！');
+        }
+        else{
+            callback();
+        }
+    };
+
+    // componentWillUpdate(nextProps, nextState) {
+    //     if(nextProps.dataFromRow===this.props.dataFromRow||this.state.dataFromRow===nextProps.dataFromRow||this.state.dataFromRow===this.props.dataFromRow){
+    //         return false;
+    //     }
+    //     this.setState({dataFromRow:this.props.dataFromRow});
+    //     return true;
+    // }
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const {dataFromRow} = this.props;
+
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+            return (
+                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                    <Form.Item label="姓名" hasFeedback>
+                        {getFieldDecorator('MECHANIC_NAME', {
+                            initialValue: dataFromRow.MECHANIC_NAME?dataFromRow.MECHANIC_NAME:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入姓名!',
+                                },
+                            ],
+                        })(<Input />)}
+                    </Form.Item>
+                    <Form.Item label="性别" hasFeedback>
+                        {getFieldDecorator('SEX', {
+                            initialValue: dataFromRow.MECHANIC_NAME?dataFromRow.SEX:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择性别!',
+                                },
+                            ],
+                        })(<Select>{this.getSelectedOptions(this.props.mechanicSelectedOptions.mechanicSex)}</Select>)}
+                    </Form.Item>
+                    <Form.Item label="电话" hasFeedback>
+                        {getFieldDecorator('TEL', {
+                            initialValue: dataFromRow.TEL?dataFromRow.TEL:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: ' ',
+                                },
+                                {
+                                    validator:(rule,value,callback) => this.validateTel(rule,value,callback),
+                                    validatorStatus: 'success',
+                                },
+                            ],
+                        })(<Input/>)}
+                    </Form.Item>
+                    <Form.Item label="工号" hasFeedback>
+                        {getFieldDecorator('WORK_NUMBER', {
+                            initialValue: dataFromRow.WORK_NUMBER?dataFromRow.WORK_NUMBER:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入工号!',
+                                },
+                            ],
+                        })(<Input />)}
+                    </Form.Item>
+                    <Form.Item label="所属门店" hasFeedback>
+                        {getFieldDecorator('PROV_SID', {
+                            initialValue: dataFromRow.PROV_SID?dataFromRow.PROV_SID:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择门店!',
+                                },
+                            ],
+                        })(<Select>{this.getSelectedOptions(this.props.mechanicSelectedOptions.vendors)}</Select>)}
+                    </Form.Item>
+                    <Form.Item label="技师等级" hasFeedback>
+                        {getFieldDecorator('GRADE', {
+                            initialValue: dataFromRow.GRADE?dataFromRow.GRADE:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择技师等级!',
+                                },
+                            ],
+                        })(<Select>{this.getSelectedOptions(this.props.mechanicSelectedOptions.mechanicGrade)}</Select>)}
+                    </Form.Item>
+                    <Form.Item label="技师岗位" hasFeedback>
+                        {getFieldDecorator('MECHANIC_WORK', {
+                            initialValue: dataFromRow.MECHANIC_WORK?dataFromRow.MECHANIC_WORK:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择技师岗位!',
+                                },
+                            ],
+                        })(<Select>{this.getSelectedOptions(this.props.mechanicSelectedOptions.mechanicWork)}</Select>)}
+                    </Form.Item>
+                    <Form.Item label="用友ID" hasFeedback>
+                        {getFieldDecorator('U8_MECHAINC_CODE', {
+                            initialValue: dataFromRow.U8_MECHAINC_CODE?dataFromRow.U8_MECHAINC_CODE:"",
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入用友ID!',
+                                },
+                            ],
+                        })(<Input />)}
+                    </Form.Item>
+                </Form>
+            );
+
+    }
+}
+
+const WrappedAddNewMechanicForm = Form.create({ name: 'addNew' })(addNewMechanicForm);
+export default WrappedAddNewMechanicForm;

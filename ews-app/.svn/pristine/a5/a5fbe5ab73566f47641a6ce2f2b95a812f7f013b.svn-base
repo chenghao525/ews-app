@@ -1,0 +1,341 @@
+package com.corp.servlet.common;
+
+import com.corp.ews.mechanic.MechanicUtils;
+import com.corp.ews.ro.ROMixComponentsUtil;
+import com.corp.ews.ro.ROSheetMetalSurfaceUtil;
+import com.corp.ews.ro.RepairOrdersUtils;
+import com.corp.frame.bean.JSONArray;
+import com.corp.frame.bean.JSONObject;
+import com.corp.frame.core.dao.DataManager;
+import com.corp.frame.core.dao.DataObject;
+import com.corp.oa.system.dictionary.DicBO;
+import com.corp.oa.system.log.LogBO;
+import com.corp.oa.system.role.RoleUtils;
+import com.corp.oa.system.system.SystemBO;
+import com.corp.oa.system.user.UserBO;
+import com.corp.oa.util.G;
+import com.corp.provider.ProviderBO;
+import com.corp.servlet.AjaxInterface;
+import com.corp.sms.SmsBO;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
+
+/**
+ * 获取数据列表的通用servlet，具备翻页和查询功能
+ *
+ */
+public class GetCommonList implements AjaxInterface {
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void doExecute(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+
+		// 分页
+		int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+		int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+		// 字段排序
+		String sortField = request.getParameter("sortField");
+		String sortOrder = request.getParameter("sortOrder");
+
+		// String lastTotal = request.getParameter("total");
+
+		String code = request.getParameter("code");
+
+		DataObject dob = null;
+		String rootSql = "";
+
+		Class comCls = getClass().getClassLoader().loadClass("com.corp.servlet.common." + code);
+		CommonSearchBase cls = (CommonSearchBase) comCls.newInstance();
+		if (!cls.doConfig(request, response, dm)) {
+			return;
+		}
+
+		String sql = cls.getSql();
+		String defaultSortField = cls.getDefaultSortField();
+		String infoType = cls.getListStatusInfoType();
+		String listStatusSid = cls.setListStatusSidName();
+		String[] inc = cls.getInc();
+		String[] mask = cls.getMask();
+		String[] parameter = cls.getParameter();
+		cls = null;
+
+		// int total = 0;
+		// if (G.isNvl(lastTotal)) {
+		dob = dm.findByPrimaryKey("select count(1) as cnt from (" + sql + ")", parameter);
+		int total = dob.getInt("CNT");
+		// } else {
+		// if (G.isNumeric(lastTotal)) {
+		// total = Integer.parseInt(lastTotal);
+		// }
+		// }
+
+		// 先排序
+		if (!G.isNvl(sortField))
+			sql += " order by " + sortField + " " + sortOrder;
+		else if (!G.isNvl(defaultSortField)) {
+			sql += " order by " + defaultSortField;
+		}
+
+		rootSql = " select a.*,rownum as rn from(" + sql + ") a";
+		sql = "select tb.* from (select * from (" + rootSql + ") where rn<=(" + pageIndex + "+1)*"
+				+ pageSize + ")tb where tb.rn>" + pageIndex + "*" + pageSize;
+
+		Iterator<DataObject> it = dm.find(sql, parameter).iterator();
+
+		CommonUtils cmu = new CommonUtils();
+
+		JSONArray jsona = new JSONArray();
+		JSONObject json = null;
+		DataObject lsDob = null;
+
+		while (it.hasNext()) {
+			dob = it.next();
+
+			if (mask != null) {
+				for (int i = 0; i < mask.length; i++) {
+					dob.setString(mask[i], G.setStringMask(dob.getString(mask[i]), 4));
+				}
+			}
+			// list_status 查询
+			if (!G.isNvl(infoType)) {
+				if (!G.isNvl(listStatusSid)) {
+					String val = cmu.listStatusByInfoType(infoType, dob.getString(listStatusSid), dm);
+					dob.setString(listStatusSid, val);
+				}
+			}
+			json = (inc == null) ? dob.toJson() : dob.toJsonByArray(inc);
+
+			jsona.put(json);
+		}
+
+		// 库存暂时不使用
+		// if (CommonUtils.CODE_ORDER_SRV.equals(code)) {// 即将到店的，检查库存
+		// // 此时的数据已经按照到店预约的时间升序，最早的排在前面
+		// DeliveryBO bo = new DeliveryBO();
+		// jsona = bo.getProvOilStock(jsona, dm);
+		// }
+
+		// 分页的情况下
+		json = new JSONObject();
+		json.put("total", total);
+		json.put("data", jsona);
+
+		// 插入日志
+		// G.insertLog(request, log, dm);
+
+		response.getWriter().write(json.toString());
+	}
+}
+
+// ////////////////////////////////////////////////////////////////
+// 以下是子类，配置不同的查询语句预计输出字段等
+// ///////////////////////////////////////////////////////////////
+
+class GetSystemLogList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		LogBO bo = new LogBO();
+		super.setSql(bo.getSearchSql(bo.getLogList(), G.getSearchFromRequest(request)));
+		super.setDefaultSortField(" OPTTIME desc");
+		super.setInc(new String[] { "SID", "OPTEMPID", "LOGTYPE", "OPTTYPE", "OPTATTR", "OPTTIME",
+				"OPTSECONDS" });
+		// log = "查询系统日志列表";
+		return true;
+	}
+}
+
+class GetSystemInfoList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		SystemBO bo = new SystemBO();
+		super.setSql(bo.getSearchSql(bo.getSystemInfoList(), G.getSearchFromRequest(request)));
+		super.setDefaultSortField(" ATTRNAME");
+		super.setInc(new String[] { "ATTRNAME", "ATTRVALUE", "MEMO" });
+		// log = "查询系统参数列表";
+		return true;
+	}
+}
+class GetSmsSendList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		String his = request.getParameter("his");
+		SmsBO bo = new SmsBO();
+		super.setSql(bo.getSearchSql(
+				("yes".equals(his)) ? bo.getSMSHisListSql() : bo.getSMSListSql(),
+				G.getSearchFromRequest(request)));
+		super.setDefaultSortField(" CRT_TIME desc");
+		super.setMask(new String[] { "REC_PHONE" });
+		// log = "查询短信发送列表";
+		return true;
+	}
+}
+
+class GetDicList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		DicBO bo = new DicBO();
+		super.setSql(bo.getSearchSql(bo.getDicList(), G.getSearchFromRequest(request)));
+		super.setDefaultSortField(" INFOTYPE,OPTORDER");
+		// log = "查询系统字典数据列表";
+		return true;
+	}
+}
+
+class GetRoleDicList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		RoleUtils ru = new RoleUtils();
+		super.setSql(ru.getRoleDicListSql(G.getUserIdFromSession(request)));
+		super.setInc(new String[] { "ID", "TEXT" });
+		return true;
+	}
+}
+
+class GetEmployeeList extends CommonSearchBase {
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm)
+			throws Exception {
+		UserBO ub = new UserBO();
+		super.setSql("select * from (" + ub.getEmpAllList() + ") where state='1' and sid<>'"
+				+ G.getUserIdFromSession(request) + "'");
+		super.setInc(new String[] { "SID", "EMPID", "EMPNAME", "MP" });
+		super.setDefaultSortField(G.getNlssort("EMPNAME"));
+		// log = "查询系统人员列表";
+		return true;
+	}
+}
+//工单
+class GetRepairOrders extends CommonSearchBase {
+
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm) {
+
+		RepairOrdersUtils roUtl = new RepairOrdersUtils();
+		DataObject dob = G.getSearchFromRequest(request);
+		String provSid = G.getEWSProvSidFromSession(request);
+		String repair = request.getParameter("repair");
+		if (dob == null) {
+			dob = new DataObject();
+		}
+		dob.setString("S_REPAIR_STATE", repair);
+
+		super.setSql(roUtl.getROListSql(roUtl.getROSql(), provSid, dob));
+		super.setDefaultSortField("crt_time desc");
+		super.setListStatusInfoType("51");
+		super.setListStatusSidName("REWORK_TYPE");
+		super.setInc(new String[] { "SID", "PROV_SID", "PPG_BRAND_CODE", "MECHANIC_NAME",
+				"MECHANIC_ID", "MECHANIC_WORK", "PROV_NAME", "PROV_NAME_SUM",
+				"MIXED_DATE", "CAR_BRAND", "SHF_NUMBER", "VEHICLE_LICENSE", "RO_NUMBER", "REWORK_TYPE",
+                "EWS_RO_CODE", "CRT_TIME", "PAINT_MAKER", "PAINT_MAKER_ID", "TOTAL_LIQUID_COST",
+                "ORIGINAL_RO_NUMBER", "SHEET_METAL_COUNT", "WEIGHT_TOTAL", "COLOR_CODE", "COLOR_NAME" });
+
+		return true;
+	}
+}
+class GetROComponents extends CommonSearchBase {
+
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm) {
+
+		ROMixComponentsUtil mcUtl = new ROMixComponentsUtil();
+		String ewsCode = request.getParameter("ewsRoCode");
+		String roNumber = request.getParameter("roNumber");
+//		String provSid 	= G.getEWSProvSidFromSession(request);
+		String roSid = request.getParameter("roSid");
+
+		DataObject dob = G.getSearchFromRequest(request);
+
+		if (!G.isNvl(roSid)) {
+			dob.setString("S_RO_SID", roSid);
+		}
+		super.setSql(mcUtl.mixCptsSql(mcUtl.mixCptsBaseSql(), ewsCode, roNumber, "", dob));
+		super.setDefaultSortField(" crt_time desc");
+		super.setInc( new String[] {
+				"RO_NUMBER", "EWS_RO_CODE", "COMPONENT_CODE", "COMPONENT_DESCRIPTION", "COMPONENT_WEIGHT_APPLIED",
+				"COMPONENT_WEIGHT_TARGET", "COMPONENT_DENSITY", "RO_SID", "CRT_TIME"
+		});
+
+
+		return true;
+	}
+}
+class GetROSHFList extends CommonSearchBase {
+
+    @Override
+    public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm) {
+
+        ROSheetMetalSurfaceUtil shfUtl = new ROSheetMetalSurfaceUtil();
+        String ewsCode = request.getParameter("ewsRoCode");
+        String roNumber = request.getParameter("roNumber");
+//        String provSid 	= G.getEWSProvSidFromSession(request);
+        String roSid = request.getParameter("roSid");
+
+        DataObject dob = G.getSearchFromRequest(request);
+
+        if (!G.isNvl(roSid)) {
+            dob.setString("S_RO_SID", roSid);
+        }
+        super.setSql(shfUtl.shfSql(shfUtl.shfBaseSql(), ewsCode, roNumber, null, dob));
+        super.setDefaultSortField(" crt_time desc");
+        super.setInc( new String[] {
+                "RO_NUMBER", "EWS_RO_CODE", "SHF_NAME", "SHF_ID", "SHF_DESCRIPTION",
+                "SHF_NUMBER", "RO_SID", "CRT_TIME"
+        });
+
+
+        return true;
+    }
+}
+
+class GetMechanicList extends CommonSearchBase {
+
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm) {
+
+		MechanicUtils mUtl = new MechanicUtils();
+		String provSid = G.getEWSProvSidFromSession(request);
+		DataObject dob = G.getSearchFromRequest(request);
+
+		super.setSql(mUtl.getMechanicsSql(provSid, mUtl.getBaseSWSql(), dob));
+		super.setDefaultSortField(" work_number desc");
+		super.setListStatusInfoType("50");
+		super.setListStatusSidName("REWORK_TYPE");
+		super.setInc(new String[] { "SID", "MECHANIC_NAME", "GRADE",
+				"TEL", "PROV_SID", "PROV_NAME", "PROV_NAME_SUM", "U8_MECHAINC_CODE", "SEX", "WORK_NUMBER", "MECHANIC_WORK"});
+
+		return true;
+	}
+}
+
+class GetU8CFailedList extends CommonSearchBase {
+
+	@Override
+	public boolean doConfig(HttpServletRequest request, HttpServletResponse response, DataManager dm) {
+
+		RepairOrdersUtils roUtl = new RepairOrdersUtils();
+		DataObject dob = G.getSearchFromRequest(request);
+		// 之查找已经同步失败的数据
+		dob.setString("S_U8_SYNC_STATE", "fail");
+
+		super.setSql(roUtl.getROListSql(roUtl.getROSql(), G.getEWSProvSidFromSession(request), dob));
+		super.setDefaultSortField(" mixed_date desc");
+		super.setInc(new String[] {
+				"EWS_RO_CODE", "PROV_SID", "RO_NUMBER", "VEHICLE_LICENSE", "WEIGHT_TOTAL", "COLOR_CODE",
+				"COLOR_NAME", "CAR_BRAND", "SHEET_METAL_COUNT", "PAINT_MAKER", "MECHANIC_NAME", "REWORK_TYPE",
+				"MIXED_DATE", "SID"
+		});
+		super.setMask(new String[] { "VEHICLE_LICENSE" });
+
+
+		return true;
+	}
+}
+
+

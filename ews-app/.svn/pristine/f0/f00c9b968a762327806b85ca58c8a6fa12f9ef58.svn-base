@@ -1,0 +1,31 @@
+#log4j.rootCategory=info,debug,error,stdout,file
+# 日志输出类型为控制台和文件
+log4j.rootCategory=error,file
+log4j.logger.cn.com=debug,file
+
+# 控制台输出
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+# Pattern to output the caller's file name and line number.
+#log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+log4j.appender.stdout.layout.ConversionPattern=%m%n
+
+# 文件输出
+log4j.appender.file=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.file.File=C:/xmf.log
+log4j.appender.file.DatePattern='_'yyyy-MM-dd'.log'
+
+#log4j.appender.file=org.apache.log4j.RollingFileAppender
+#log4j.appender.file.File=C:\\oa.log
+#log4j.appender.file.MaxFileSize=100KB
+# Keep one backup file
+#log4j.appender.file.MaxBackupIndex=1
+
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+#log4j.appender.file.layout.ConversionPattern=%d %5p %t %c - %m%n
+log4j.appender.file.layout.ConversionPattern=%d %5p - %m%n
+
+#用Log4j输出日志文件时，输出以当前的日期为文件名的文件，例如20041012.log 
+#log4j.appender.A2=org.apache.log4j.DailyRollingFileAppender
+#log4j.appender.A2.File=E:\\Projects\\cei\\logs\\cei.log
+#log4j.appender.A2.DatePattern='.'yyyy-MM

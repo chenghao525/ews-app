@@ -1,0 +1,117 @@
+import React, { Component } from "react";
+import { Form, Row, Col, Button, Select, message, Icon } from "antd";
+import { formIsNvl, getSearchForm } from "../../utils/G";
+import AddCostModel from "./AddCostModel"
+import moment from "moment";
+import "moment/locale/zh-cn"
+
+moment.locale("zh-cn");
+
+const { Option } = Select;
+
+
+class HomeSearchForm extends Component {
+
+    state = {
+        expand: false,
+        loading: true,
+    };
+
+    handleSearch = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (formIsNvl(values)) {
+                message.warning("请输入需要查询的值");
+                return;
+            }
+            const json = getSearchForm(values, {
+                S_MIXED_DATE: "YYYY-MM-DD"
+            });
+            if(json.S_PROV_SID===undefined){
+                json.S_PROV_SID="";
+            }
+            this.props.search(json);
+        });
+
+    };
+
+    getVendorsSelectedOptions(){
+        const children = this.props.vendors.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+
+
+    getSelectedOptions() {
+        const children = this.props.monthsArray.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+
+
+    handleChange=(value)=>{
+        console.log('5555555',value); // { key: "lucy", label: "Lucy (101)" }
+        this.props.getdatevalue(value);
+    }
+
+    handleAddClicked=()=>{
+        this.props.handleAddClicked();
+    }
+
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const {monthsArray} = this.props;
+        const currentMonth = monthsArray[1]?monthsArray[0].text:"";
+
+        return (
+            <Form className="ant-advanced-search-form home-search-form">
+                <Row gutter={24} style={{padding: '5px 0px'}}>
+                    <Col span={4} key={'s_1'}>
+                        <Form.Item label={"门店"} key={'provider'}>
+                            {getFieldDecorator(`S_PROV_SID`, {
+                                rules:[
+                                    {
+                                        required: false,
+                                        message: 'Input something!'
+                                    }
+                                ]
+                            })(<Select style={{ width: 150 }} key={'s_v'} allowClear={true} size="small">{this.getVendorsSelectedOptions()}</Select>)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={4} key={'s_2'}>
+                        <Form.Item label={"调色时间"} key={'p_s'}>
+                            {getFieldDecorator(`S_MIXED_DATE`, {
+                                initialValue: currentMonth,
+                                rules:[
+                                    {
+                                        required: false,
+                                        message: 'Input something!'
+                                    }
+                                ]
+                            })(<Select style={{ width: 120 }} key={'s_c'} allowClear={true} size="small" onChange={this.handleChange}>{this.getSelectedOptions()}</Select>)}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={1}  key={'s_3'} style={{ marginTop: 7 }}>
+                        <Button type="primary" onClick={this.handleSearch} size="small">
+                            查询
+                        </Button>
+                    </Col>
+                    <Col span={1}  key={'s_4'} style={{ marginTop: 7 }}>
+                        <Button onClick={this.handleAddClicked} type={"primary"} size="small"   >
+                            <Icon type="plus-square" />
+                            新增</Button>
+                    </Col>
+                </Row>
+            </Form>
+        );
+    }
+}
+export default Form.create({name: "advanced_search"})(HomeSearchForm);

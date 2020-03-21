@@ -1,0 +1,147 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import EfficiencySearchForm from "../../component/EfficiencySearchForm";
+import { vendorsAction, adjusterAction, paintAction } from "../../store/actions/generalActions";
+import echarts  from 'echarts/dist/echarts.common';
+import 'echarts/lib/component/tooltip';
+import { isNvl, formatYearData, pieEcharts, barAndlineEcharts, buildTableEcharts } from "../../utils/G";
+import  macarons  from "./macarons";
+import  { reportEfficiencyMonth,reportEfficiencyYear }  from "../../services/generalServices";
+require('../../css/TableEfficiency.css');
+
+const mapStateToProps = state => {
+    return {
+        data: state.ro.data,
+        loading: state.ro.loading,
+        vendors: state.base.vendors,
+        adjuster: state.base.adjuster,
+        paint:state.base.paint
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        load: (params = {}) => {
+            //dispatch(efficiencyMonthAction(params));
+
+        },
+        loadVendors: () => {
+            dispatch(vendorsAction({}));
+        },
+        loadAdjuster: () => {
+            dispatch(adjusterAction({work:'900'}));
+        },
+        loadpaint: () => {
+            dispatch(paintAction({work:'901'}));
+        }
+
+
+    }
+};
+
+class EfficiencyRpt extends Component{
+
+    state = {
+        data: [],
+        loading: false,
+        details: {},
+        selectdata:{},
+        thisIsMyCopy:'',
+        searchValue:{},
+        ismonth:'1',
+        monthdata:{},
+        pieSeries:[],
+        cSeries:[],
+        sumarry:[],
+        datevalue:''
+
+    };
+    constructor(props) {
+        super(props);
+        let today = new Date();
+        let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        this.state = {
+            datevalue: date
+        };
+    }
+    componentDidMount() {
+        //this.props.load();
+        this.props.loadVendors();
+        this.props.loadAdjuster();
+        this.props.loadpaint();
+        echarts.registerTheme('theme',macarons );
+    }
+
+    searchFrom = (values) => {
+        this.props.load(values);
+        this.setState({searchValue:values});
+        if((this.state.ismonth==1) || (this.state.ismonth==undefined)){
+            reportEfficiencyMonth(values).then(res=>{
+               let numdata = formatYearData(res,values,this.state.ismonth?this.state.ismonth:1);
+                this.setState({
+                    monthdata: numdata.monthdata,
+                    pieSeries: numdata.pieSeries,
+                    cSeries: numdata.cSeries,
+                    sumarry: numdata.sumarry});
+                this.makeReportMonth();
+            })
+        }else{
+            reportEfficiencyYear(values).then(res=>{
+                let numdata = formatYearData(res,values,this.state.ismonth?this.state.ismonth:1);
+                this.setState({
+                    monthdata: numdata.monthdata,
+                    pieSeries: numdata.pieSeries,
+                    cSeries: numdata.cSeries,
+                    sumarry: numdata.sumarry});
+                this.makeReportMonth();
+            })
+        }
+    };
+
+    getChildValue(e) {
+        console.log("getChildValue", e);
+        this.setState({
+            ismonth:e
+        })
+    }
+
+    makeReportMonth(){
+        this.showMonthTable();
+        let myChart = echarts.init(document.getElementById('main1'),macarons);
+        const {searchValue } = this.state;
+        let typeValue=searchValue.TYPE;
+
+        if(isNvl(searchValue.PROV_SID) && isNvl(searchValue.PAINT_MAKER_ID) && isNvl(searchValue.MECHANIC_ID)) {
+            pieEcharts(myChart,this.state.pieSeries,typeValue,this.state.ismonth?this.state.ismonth:1);
+        }else{
+            barAndlineEcharts(myChart,this.state.monthdata,this.state.cSeries,typeValue,this.state.ismonth?this.state.ismonth:1);
+        }
+    }
+
+    showMonthTable(){
+        let table = document.getElementById('table');
+        let trs=buildTableEcharts(this.state.monthdata, this.state.cSeries, this.state.pieSeries, this.state.sumarry, this.state.ismonth?this.state.ismonth:1);
+        this.setState({thisIsMyCopy:trs});
+    }
+
+    render() {
+        const { data, loading, vendors, paint, adjuster} = this.props;
+        const { details, selectdata, thisIsMyCopy, searchValue, datevalue} = this.state;
+
+        return (
+            <div>
+                <EfficiencySearchForm search={this.searchFrom} vendors={vendors||[]}  paint={paint||[]} adjuster={adjuster||[]} selectdata={selectdata||[]} ismonth={this.getChildValue.bind(this)} datevalue={datevalue} />
+                <div style={{width: '100%',}}>
+                <div style={{ backgroundColor: '#ffffff',
+                    height: '500px', marginBottom: '20px',marginTop:'10px'}}
+                     id = "main1" >
+                </div>
+
+                <table id="table" style={{width: '80%',textAlign:'center',margin: 'auto',height: '100px'}}  dangerouslySetInnerHTML={{__html: thisIsMyCopy}} border="true" />
+                </div>
+            </div>
+        );
+    }
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EfficiencyRpt);

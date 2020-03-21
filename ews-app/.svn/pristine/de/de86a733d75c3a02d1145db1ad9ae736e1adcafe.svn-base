@@ -1,0 +1,88 @@
+P {
+	FONT-SIZE: 9pt; LETTER-SPACING: 1px
+}
+.bg {
+	BACKGROUND-POSITION: right top; FONT-SIZE: 9pt; BACKGROUND-ATTACHMENT: fixed; BACKGROUND-REPEAT: no-repeat; BACKGROUND-COLOR: #c9d600
+}
+INPUT.text {
+	BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #000000 1px solid; BORDER-LEFT: #000000 1px solid; BORDER-BOTTOM: #000000 1px solid
+}
+INPUT.text1 {
+	BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #000000 1px solid; BORDER-LEFT: #000000 1px solid; BORDER-BOTTOM: #000000 1px solid; BACKGROUND-COLOR: #eeeeee
+}
+SELECT.option {
+	BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #c4e759 1px solid; BORDER-LEFT: #c4e759 1px solid; BORDER-BOTTOM: #c4e759 1px solid; BACKGROUND-COLOR: #eeeeee
+}
+INPUT.button {
+	BORDER-RIGHT: #c4e759 1px double; BORDER-TOP: #c4e759 1px double; FONT-SIZE: 9pt; BORDER-LEFT: #c4e759 1px double; COLOR: #333333; BORDER-BOTTOM: #c4e759 1px double; HEIGHT: 16px; BACKGROUND-COLOR: #ccff99
+}
+INPUT.button1 {
+	BORDER-RIGHT: 1px ridge; BORDER-TOP: 1px ridge; FONT-SIZE: 9pt; BORDER-LEFT: 1px ridge; COLOR: 000000; BORDER-BOTTOM: 1px ridge; BACKGROUND-COLOR: #CCCCCC
+; vertical-align: text-bottom
+; background-position: center
+}
+.content {
+	FONT-SIZE: 14px; COLOR: 000069; LETTER-SPACING: 2px; BACKGROUND-COLOR: FFAC0B; TEXT-ALIGN: center;
+}
+.content0 {
+	FONT-SIZE: 12px; COLOR: #000000; LETTER-SPACING: 2px; BACKGROUND-COLOR: #FFFFFF; TEXT-ALIGN: center;
+}
+.content1 {
+	FONT-SIZE: 12px; COLOR: #FFFFFF; LETTER-SPACING: 2px; BACKGROUND-COLOR: #CCCCCC; TEXT-ALIGN: center;
+}
+.content2 {
+	FONT-SIZE: 12px; COLOR: #FFFFFF; LETTER-SPACING: 2px; BACKGROUND-COLOR: #999999; TEXT-ALIGN: center;
+}
+.td {
+	BACKGROUND-POSITION: right 50%; BACKGROUND-ATTACHMENT: fixed; BACKGROUND-REPEAT: no-repeat
+}
+.tableTitle {
+	background-color: #CCCCCC;
+	text-align: center;
+	height: 22px;
+
+
+}
+.tableTitle1 {
+	background-color: #CCCCCC;
+}
+.tablebg {
+	background-color: #999999;
+; clip:  rect(   ); width: 50%; float: none
+; text-align: center
+}
+.tableLeft {
+	background-color: #f7f7f7;
+	text-align: right;
+	font-size: 9pt;
+
+}
+.tableCenter {
+	text-align: center;
+	background-color: #F2F2F2;
+
+}
+.tableRight {
+	text-align: left;
+	font-size: 9pt;
+	background-color: #f7f7f7;
+
+
+}
+.tablebgW {
+	background-color: #999999;
+	width: 100%;
+}
+.tableCenter2 {
+	background-color: #F9F9F9;
+	text-align: center;
+
+}
+.tablebgWW {
+	background-color: #F6F6F6;
+	background-position: center;
+	text-align: center;
+	height: 20px;
+	width: 100%;
+}
+.flowTitle {  font-weight: bold; color: #FF0066 }

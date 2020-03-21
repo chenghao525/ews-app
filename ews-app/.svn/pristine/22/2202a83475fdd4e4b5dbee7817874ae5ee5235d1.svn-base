@@ -1,0 +1,111 @@
+import React, { Component } from "react";
+import {Form, Row, Col, Input, Button, Select, message} from 'antd';
+import {formIsNvl, getSearchForm} from "../../utils/G";
+import moment from "moment";
+import "moment/locale/zh-cn"
+
+moment.locale("zh-cn");
+
+const { Option } = Select;
+
+class MechanicSearchForm extends Component {
+
+    state = {
+        expand: false,
+        loading: true,
+    };
+
+    handleSearch = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if(formIsNvl(values)){
+                message.warning("请输入需要查询的值");
+                return;
+            }
+            const json = getSearchForm(values);
+            this.props.search(json);
+        });
+    };
+
+    handleReset = () => {
+        this.props.form.resetFields();
+        this.props.reloadTable();
+    };
+
+    getVendorsSelectedOptions() {
+        const children = this.props.vendors.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+
+    getWorkSelectedOptions() {
+        const children = this.props.mechanicWork.map(it => {
+            return (
+                <Option value={it.id} key={it.id}>{it.text}</Option>
+            );
+        });
+        return children;
+    }
+
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <Form className="ant-advanced-search-form" onSubmit={this.handleSearch}>
+                <Row gutter={24} style={{padding: '0 10px'}}>
+                    <Col span={4} key={'s_1'}>
+                        <Form.Item label={"门店"}>
+                            {getFieldDecorator(`S_PROV_SID`, {
+                                rules:[
+                                    {
+                                        required: false,
+                                        message: 'Input something!'
+                                    }
+                                ]
+                            })(<Select style={{ width: 120 }} key={'s_c'} allowClear={true} size="small">{this.getVendorsSelectedOptions()}</Select>)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={4} key={'s_2'}>
+                        <Form.Item label={"技师岗位"}>
+                            {getFieldDecorator(`S_MECHANIC_WORK`, {
+                                rules:[
+                                    {
+                                        required: false,
+                                        message: 'Input something!'
+                                    }
+                                ]
+                            })(<Select style={{ width: 120 }} key={'s_c'} allowClear={true} size="small">{this.getWorkSelectedOptions()}</Select>)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={4} key={'s_3'}>
+                        <Form.Item label={"技师姓名"}>
+                            {getFieldDecorator(`S_MECHANIC_NAME`, {
+                                rules:[
+                                    {
+                                        required: false,
+                                        message: 'Input something!'
+                                    }
+                                ]
+                            })(<Input placeholder="技师姓名" allowClear size="small"/>)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ textAlign: 'left', marginLeft: 10,marginTop: 5, width:200 }} key={'s_4'}>
+                        <Button type="primary" htmlType="submit" size="small">
+                            查询
+                        </Button>
+                        <Button style={{ marginLeft: 8 }} onClick={this.handleReset} size="small" >
+                            清除
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        );
+    }
+}
+
+
+
+export default Form.create({name: "mechanicSearchForm"})(MechanicSearchForm);

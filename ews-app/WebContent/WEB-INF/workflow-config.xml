@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<workflow-config>
+
+<workflow>
+		<id></id>
+		<name>组织机构</name>
+		<path>/system/org#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构调整顺序</name>
+		<path>/system/org#b_queryorg</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.ShowInfoAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构 保存顺序</name>
+		<path>/system/org#b_savesort</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.UpdateOrgAction</className>
+			<className>com.corp.oa.system.org.ShowDeptAction</className>
+		</flow>
+	</workflow>
+
+		<workflow>
+		<id></id>
+		<name>修改密码</name>
+		<path>/system/org#b_pwdsubmit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpPwAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构人员查询</name>
+		<path>/system/org#b_empfind</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构部门职务查询</name>
+		<path>/system/org#b_deptfind</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构部门 显示</name>
+		<path>/system/org#b_deptshow</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.ShowDeptAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901001</id>
+		<name>组织机构添加新部门</name>
+		<path>/system/org#b_deptadd</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptAddAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901002</id>
+		<name>组织机构修改部门信息</name>
+		<path>/system/org#b_deptedit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901004</id>
+		<name>组织机构保存部门信息</name>
+		<path>/system/org#b_deptsave</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptSaveAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901003</id>
+		<name>组织机构删除部门</name>
+		<path>/system/org#b_deptdel</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptDelAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901005</id>
+		<name>组织机构添加新职务</name>
+		<path>/system/org#b_dutyadd</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDutyAddAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901006</id>
+		<name>组织机构修改职务信息</name>
+		<path>/system/org#b_dutyedit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDutyEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901008</id>
+		<name>组织机构保存职务信息</name>
+		<path>/system/org#b_dutysave</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDutySaveAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901007</id>
+		<name>组织机构删除职务</name>
+		<path>/system/org#b_dutydel</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDutyDelAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901010</id>
+		<name>组织机构添加新人员</name>
+		<path>/system/org#b_empadd</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpAddAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901011</id>
+		<name>组织机构修改人员信息</name>
+		<path>/system/org#b_empedit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901012</id>
+		<name>组织机构删除人员</name>
+		<path>/system/org#b_empdel</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpDelAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901013</id>
+		<name>组织机构保存人员信息</name>
+		<path>/system/org#b_empsave</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgEmpSaveAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构业务人员管理</name>
+		<path>/system/org#b_expressmanage</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptExpressEmpFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>组织机构业务人员管理</name>
+		<path>/expressemp/manage#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgDeptExpressEmpFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901014</id>
+		<name>组织机构增加业务员人员信息</name>
+		<path>/expressemp/manage#b_expressadd</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpAddAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901015</id>
+		<name>组织机构修改业务员人员信息</name>
+		<path>/expressemp/manage#b_expressedit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901017</id>
+		<name>组织机构保存业务员人员信息</name>
+		<path>/expressemp/manage#b_expresssave</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpSaveAction</className>
+			<className>com.corp.oa.system.org.OrgDeptExpressEmpFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901016</id>
+		<name>组织机构删除业务员人员信息</name>
+		<path>/expressemp/manage#b_expressdel</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpDelAction</className>
+			<className>com.corp.oa.system.org.OrgDeptExpressEmpFindAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901018</id>
+		<name>组织机构查看业务员账户流水账</name>
+		<path>/expressemp/account#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpAccountListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>预览业务人员信息</name>
+		<path>/expressemp/manage#b_expresspreview</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressEmpPreviewAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>业务人员账户充值跳转</name>
+		<path>/expressemp/manage#b_expressAcMang</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressAcMangAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19901019</id>
+		<name>业务人员账户充值销款保存</name>
+		<path>/expressemp/manage#b_expressAcSave</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.org.OrgExpressAcSaveAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902000</id>
+		<name>人员信息用户列表</name>
+		<path>/system/user#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902001</id>
+		<name>人员信息用户查看</name>
+		<path>/system/user#b_see</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserViewAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902002</id>
+		<name>人员信息用户修改</name>
+		<path>/system/user#b_edit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902003</id>
+		<name>人员信息用户删除</name>
+		<path>/system/user#b_del</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserDelAction</className>
+			<className>com.corp.oa.system.user.UserAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902005</id>
+		<name>人员信息用户保存</name>
+		<path>/system/user#b_save</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserSaveAction</className>
+			<className>com.corp.oa.system.user.UserAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19902004</id>
+		<name>人员信息密码重置</name>
+		<path>/system/user#b_resetpwd</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.user.UserPwdResetAction</className>
+			<className>com.corp.oa.system.user.UserAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id></id>
+		<name>菜单</name>
+		<path>/menu/menu#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.menu.MenuAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 角色管理 -->
+	<workflow>
+		<id>19904000</id>
+		<name>查询角色列表信息</name>
+		<path>/role/roleedit#b_query</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19904004</id>
+		<name>删除角色信息</name>
+		<path>/role/roleedit#b_del</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleDelAction</className>
+		<className>com.corp.oa.system.role.RoleListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19904002</id>
+		<name>查询角色权限信息</name>
+		<path>/role/roleedit#b_queryfind</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19904003</id>
+		<name>编辑角色权限信息</name>
+		<path>/role/roleedit#b_queryedit</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19904001</id>
+		<name>添加角色信息</name>
+		<path>/role/roleedit#b_add</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19904005</id>
+		<name>保存角色信息</name>
+		<path>/role/roleedit#b_submit</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.role.RoleSaveAction</className>
+		<className>com.corp.oa.system.role.RoleListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19903000</id>
+		<name>按角色设置查询权限信息</name>
+		<path>/right/rightsetbyrole#b_query</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.right.RightByRoleAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19903001</id>
+		<name>按角色设置保存人员权限信息</name>
+		<path>/right/rightsetbyrole#b_save</path>
+		<description></description>
+		<flow>
+		<className>com.corp.oa.system.right.RightSaveByRoleAction</className>
+		<className>com.corp.oa.system.right.RightByRoleAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19907000</id>
+		<name>日志管理</name>
+		<path>/system/log#b_query</path>
+		<description></description>
+		<flow></flow>
+	</workflow>
+
+	<workflow>
+		<id>19907001</id>
+		<name>系统日志导出</name>
+		<path>/system/log#b_exp</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.log.ExportAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19907002</id>
+		<name>系统日志删除</name>
+		<path>/system/log#b_del</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.log.ExportAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19907001</id>
+		<name>详细系统日志导出</name>
+		<path>/system/log#b_expdata</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.log.ExportListAction</className>
+			<className>com.corp.oa.system.log.LogListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19907002</id>
+		<name>详细系统日志删除</name>
+		<path>/system/log#b_deldata</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.log.DelLogAction</className>
+			<className>com.corp.oa.system.log.LogListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 系统字典项管理 -->
+	<workflow>
+		<id>19905000</id>
+		<name>系统字典项管理查询</name>
+		<path>/system/sysdictionary#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.dictionary.DicListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19905001</id>
+		<name>系统字典项新增</name>
+		<path>/system/sysdictionary#b_add</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.dictionary.DicAddAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19905002</id>
+		<name>系统字典项修改</name>
+		<path>/system/sysdictionary#b_edit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.dictionary.DicEditAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19905003</id>
+		<name>系统字典项删除</name>
+		<path>/system/sysdictionary#b_del</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.dictionary.DicDelAction</className>
+			<className>com.corp.oa.system.dictionary.DicListAction</className>
+		</flow>
+	</workflow>
+
+	<workflow>
+		<id>19905004</id>
+		<name>系统字典项保存</name>
+		<path>/system/sysdictionary#b_save</path>
+		<description></description>
+		<flow>
+			<className>com.corp.oa.system.dictionary.DicSaveAction</className>
+			<className>com.corp.oa.system.dictionary.DicListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:列表 -->
+	<workflow>
+		<id>10201000</id>
+		<name>客户信息管理查询</name>
+		<path>/custom/custom#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.custom.CustomListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:新增 -->
+	<workflow>
+		<id>10201002</id>
+		<name>新增客户信息</name>
+		<path>/custom/custom#b_add</path>
+		<description></description>
+		<flow>
+			<className></className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:保存 -->
+	<workflow>
+		<id>10201004</id>
+		<name>保存客户信息</name>
+		<path>/custom/custom#b_save</path>
+		<description></description>
+		<flow>
+			<className>com.corp.custom.CustomSaveAction</className>
+			<className>com.corp.custom.CustomListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:查看 -->
+	<workflow>
+		<id>10201001</id>
+		<name>查看客户信息</name>
+		<path>/custom/custom#b_see</path>
+		<description></description>
+		<flow>
+			<className>com.corp.custom.CustomEditAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:修改 -->
+	<workflow>
+		<id>10201003</id>
+		<name>修改客户信息</name>
+		<path>/custom/custom#b_edit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.custom.CustomEditAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 客户信息管理:删除 -->
+	<workflow>
+		<id>10201005</id>
+		<name>删除客户信息</name>
+		<path>/custom/custom#b_del</path>
+		<description></description>
+		<flow>
+			<className>com.corp.custom.CustomDelAction</className>
+			<className>com.corp.custom.CustomListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:列表 -->
+	<workflow>
+		<id>10202000</id>
+		<name>服务商信息管理查询</name>
+		<path>/provider/provider#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:新增 -->
+	<workflow>
+		<id>10202002</id>
+		<name>新增服务商信息</name>
+		<path>/provider/provider#b_add</path>
+		<description></description>
+		<flow>
+			<className></className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:保存 -->
+	<workflow>
+		<id>10202004</id>
+		<name>保存服务商信息</name>
+		<path>/provider/provider#b_save</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderSaveAction</className>
+			<className>com.corp.provider.ProviderListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:保存 -->
+	<workflow>
+		<id></id>
+		<name>弹出框保存服务商信息</name>
+		<path>/provider/provider#b_savepop</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderSaveAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:查看 -->
+	<workflow>
+		<id>10202001</id>
+		<name>查看服务商信息</name>
+		<path>/provider/provider#b_see</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderEditAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:修改 -->
+	<workflow>
+		<id>10202003</id>
+		<name>修改服务商信息</name>
+		<path>/provider/provider#b_edit</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderEditAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 服务商信息管理:删除 -->
+	<workflow>
+		<id>10202005</id>
+		<name>删除服务商信息</name>
+		<path>/provider/provider#b_del</path>
+		<description></description>
+		<flow>
+			<className>com.corp.provider.ProviderDelAction</className>
+			<className>com.corp.provider.ProviderListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 短信查询 -->
+	<workflow>
+		<id>19908000</id>
+		<name>短信查询</name>
+		<path>/sms/sms#b_query</path>
+		<description></description>
+		<flow>
+			<className>com.corp.sms.SmsListAction</className>
+		</flow>
+	</workflow>
+
+	<!-- 新发送短信保存 -->
+	<workflow>
+		<id>19908001</id>
+		<name>发送短信</name>
+		<path>/sms/sms#b_save</path>
+		<description></description>
+		<flow>
+			<className>com.corp.sms.SmsSaveAction</className>
+		</flow>
+	</workflow>
+
+</workflow-config>

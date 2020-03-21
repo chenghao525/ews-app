@@ -1,0 +1,63 @@
+import React, {Component} from 'react';
+import {Table} from 'antd'
+
+
+class WorkStaticTable extends Component{
+    state={
+        columns : [
+            {
+                title:'技师',
+                dataIndex:'MECHANIC_NAME',
+                key:'MECHANIC_NAME'
+            },
+            {
+                title:'台次',
+                dataIndex:'RO_COUNT',
+                key:'RO_COUNT'
+            },
+            {
+                title:'施工面',
+                dataIndex:'SHF_COUNT',
+                key:'SHF_COUNT'
+            },
+            {
+                title:'均值（面/天）',
+                dataIndex:'AVG_VAL',
+                key:'AVG_VAL'
+            }
+        ]
+    };
+
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        //TODO:may not have value : myTableData
+        const {tableData} = this.props;
+        const myTableData = tableData.detail?tableData.detail.dtl:[];
+        const data=[];
+        const dataObj={};
+        for(let i=0;i<myTableData.length;i++){
+            dataObj.key=i;
+            dataObj.MECHANIC_NAME=myTableData[i].MECHANIC_NAME;
+            dataObj.RO_COUNT=myTableData[i].RO_COUNT;
+            dataObj.SHF_COUNT=myTableData[i].SHF_COUNT;
+            dataObj.AVG_VAL=myTableData[i].AVG_VAL;
+            data.push(dataObj);
+        }
+
+        return(
+            <div>
+                <Table
+                    bordered
+                    columns={this.state.columns}
+                    dataSource={data||[]}
+                    rowKey={record=>record.key}
+                />
+            </div>
+        )
+    }
+}
+
+export default WorkStaticTable

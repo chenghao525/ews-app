@@ -1,0 +1,284 @@
+package com.corp.ews.ro;
+
+import com.corp.frame.bean.JSONArray;
+import com.corp.frame.bean.JSONObject;
+import com.corp.frame.core.dao.DataManager;
+import com.corp.frame.core.dao.DataObject;
+import com.corp.oa.util.G;
+import com.corp.oa.util.Tuple;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * wqj
+ */
+public class RepairOrdersUtils {
+
+    /**
+     * 工单详情
+     * @param ewsRoCode
+     * @param dm
+     * @return
+     * @throws Exception
+     */
+    public JSONObject roDetailsByEwsRoCode(String ewsRoCode, String roNumber,
+                                           String provSid, DataManager dm) throws Exception {
+
+        String sql = getROSql();
+        ArrayList<String> pl = new ArrayList<String>();
+        if (!G.isNvl(ewsRoCode)) {
+            sql += " and ews_ro_code=?";
+            pl.add(ewsRoCode);
+        }
+        if (!G.isNvl(roNumber)) {
+            sql += " and ro_number=?";
+            pl.add(roNumber);
+        }
+        if (!G.isNvl(provSid)) {
+            sql += " and prov_sid=?";
+            pl.add(provSid);
+        }
+        DataObject dob = dm.findByPrimaryKey(sql, G.listToStringArray(pl));
+        if (dob == null) {
+            return null;
+        }
+        JSONObject json = dob.toJson();
+
+        return json;
+    }
+
+    /**
+     * 获取工单列表
+     * @param dob
+     * @param inc
+     * @param dm
+     * @return
+     * @throws Exception
+     */
+    public JSONArray getROList(String provSid, DataObject dob, String[] inc, DataManager dm) throws Exception {
+
+        Tuple tuple = getROListSql(getROSql(), provSid, dob);
+        Iterator<DataObject> it = dm.find(tuple.getFirst(), tuple.getParameter()).iterator();
+
+        JSONArray ja = new JSONArray();
+
+        while (it.hasNext()) {
+            dob = it.next();
+            ja.put(dob.toJsonByArray(inc));
+        }
+        return ja;
+    }
+    public DataObject getROByRONumber(String roNumber, String repairState, DataManager dm) throws Exception {
+
+        String sql = getROSql() + " and ro_number=?";
+        ArrayList<String> pl = new ArrayList<String>();
+        pl.add(roNumber);
+        if (!G.isNvl(repairState)) {
+            sql += " and repair_state=?";
+            pl.add(repairState);
+        }
+
+        return dm.findByPrimaryKey(sql, G.listToStringArray(pl));
+    }
+    public String updateRO(String user, DataObject dob, DataManager dm) throws Exception {
+
+        String currentTime = G.getCurrentTime();
+
+        dob.setModelName("T_EWS_REPAIR_ORDERS");
+        dob.setString("UPT_TIME", currentTime);
+        dob.setString("UPT_USER", user);
+
+        dm.update(dob);
+
+        return "保存成功";
+    }
+    public String addROSheetMetalSurface(String ewsRoCode, String roNumber,
+                                         String roSid, String shfId, String shfName,
+                                         String shfDes, String shfCount, DataManager dm) throws Exception {
+        DataObject dob = new DataObject();
+
+        dob.setModelName("T_EWS_RO_SHF");
+        dob.setString("SID", G.getSequence("SEQ_T_EWS_RO_SHF"));
+        dob.setString("EWS_RO_CODE", ewsRoCode);
+        dob.setString("RO_NUMBER", roNumber);
+        dob.setString("RO_SID", roSid);
+        dob.setString("SHF_NAME", shfName);
+        dob.setString("SHF_ID", shfId);
+        dob.setString("SHF_DESCRIPTION", shfDes);
+        dob.setString("SHF_NUMBER", shfCount);
+
+        dm.insert(dob);
+
+        return "ok";
+    }
+
+    /**
+     * 获取色母消耗信息
+     * @param roSid
+     * @param dm
+     * @return
+     * @throws Exception
+     */
+    public Iterator<DataObject> roCostComponentsByRoSid(String roSid, DataManager dm) throws Exception {
+
+        String sql = "select * from t_ews_ro_components where ro_sid=?";
+
+        return dm.find(sql, roSid).iterator();
+    }
+
+    /**
+     * 获取钣面信息
+     * @param roSid
+     * @param dm
+     * @return
+     * @throws Exception
+     */
+    public Iterator<DataObject> roSheetMetalSurfaceByRoSid(String roSid, DataManager dm) throws Exception {
+        String sql = "select * from t_ews_ro_shf where ro_sid=?";
+
+        return dm.find(sql, roSid).iterator();
+    }
+
+    /**
+     * 获取ro基础sql
+     * @return
+     */
+    public String getROSql() {
+
+        String sql = "select ts.*, tp.prov_name_sum, tp.prov_name from t_ews_repair_orders ts left join" +
+                " t_info_provider tp on tp.sid=ts.prov_sid where ts.state='1'";
+
+        return sql;
+    }
+    /**
+     * ews系统工单号生成规则
+     * @param sdfSum 门店简称
+     * @return
+     * @throws Exception
+     */
+    public String RONumberRules(String sdfSum) throws Exception {
+        //默认值
+        if (G.isNvl(sdfSum)) {
+            sdfSum = "EWS0";
+        }
+        DataManager dm = null;
+
+        try {
+            dm = DataManager.getInstance();
+            //获取年月
+            String drt = G.getCurrDt("yyMM");
+            String key = sdfSum + drt;
+
+            String sql = "select ro_seq_value from t_ews_ro_sequence where ro_key=?";
+            DataObject dob = dm.findByPrimaryKey(sql, key);
+
+            int sequence = 1;
+            if (dob == null) {
+
+                dob = new DataObject();
+                dob.setModelName("T_EWS_RO_SEQUENCE");
+
+                dob.setInt("RO_SEQ_VALUE", sequence);
+                dob.setString("RO_KEY", key);
+
+                dm.insert(dob);
+            } else {
+                sequence = dob.getInt("RO_SEQ_VALUE");
+                dob.setModelName("T_EWS_RO_SEQUENCE");
+                dob.setInt("RO_SEQ_VALUE", dob.getInt("RO_SEQ_VALUE") + 1);
+                dm.update(dob);
+            }
+            return key + String.format("%04d", sequence);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (dm != null) {
+                dm.close();
+            }
+        }
+
+    }
+
+    public Tuple getROListSql(String sql, String provSid, DataObject dob) {
+
+        String roNumber = dob.getString("S_RO_NUMBER");
+        String repairState = dob.getString("S_REPAIR_STATE");
+        String ppgBrandCode = dob.getString("S_PPG_BRAND_CODE");
+        String vehicleLicense = dob.getString("S_VEHICLE_LICENSE");
+        String mechanicId = dob.getString("S_MECHANIC_ID");
+        String paintMakerId = dob.getString("S_PAINT_MAKER_ID");
+        String sprovSid = dob.getString("S_PROV_SID");
+        String reworkType = dob.getString("S_REWORK_TYPE");
+        String uCloudSync = dob.getString("S_U8_SYNC_STATE");
+
+        String crtTimeST  = dob.getString("S_CRT_TIME_ST");
+        String crtTimeEd  = dob.getString("S_CRT_TIME_ED");
+        String mixedDtSt  = dob.getString("S_MIXED_DATE_ST");
+        String mixedDtEd  = dob.getString("S_MIXED_DATE_ED");
+
+        String ret = "";
+        ArrayList<String> pl = new ArrayList<String>();
+        if (!G.isNvl(provSid)) {
+            ret += " and prov_sid=?";
+            pl.add(provSid);
+        }
+        if (!G.isNvl(roNumber)) {
+            ret += " and instr(ro_number,?) > 0";
+            pl.add(G.rqm(roNumber).toUpperCase());
+        }
+        if (!G.isNvl(repairState)) {
+            ret += " and instr(?, repair_state) > 0";
+            pl.add(G.rqm(repairState));
+        }
+        if (!G.isNvl(reworkType)) {
+            ret += " and instr(?, rework_type) > 0";
+            pl.add(G.rqm(reworkType));
+        }
+        if (!G.isNvl(sprovSid)) {
+            ret += " and prov_sid=?";
+            pl.add(G.rqm(sprovSid));
+        }
+        if (!G.isNvl(ppgBrandCode)) {
+            ret = " and instr(ppg_brand_code,?) > 0";
+            pl.add(G.rqm(ppgBrandCode).toUpperCase());
+        }
+        if (!G.isNvl(vehicleLicense)) {
+            ret += " and instr(vehicle_license,?) > 0";
+            pl.add(G.rqm(vehicleLicense).toUpperCase());
+        }
+        if (!G.isNvl(mechanicId)) {
+            ret += " and mechanic_id=?";
+            pl.add(G.rqm(mechanicId));
+        }
+        if (!G.isNvl(paintMakerId)) {
+            ret += " and paint_maker_id=?";
+            pl.add(G.rqm(paintMakerId));
+        }
+        if (!G.isNvl(uCloudSync)) {
+            ret += " and u8_sync_state=?";
+            pl.add(G.rqm(uCloudSync));
+        }
+
+        if (!G.isNvl(crtTimeST)) {
+            ret += " and crt_time>=?";
+            pl.add(G.rqm(crtTimeST));
+        }
+        if (!G.isNvl(crtTimeEd)) {
+            ret += " and crt_time<=?";
+            pl.add(G.rqm(crtTimeEd));
+        }
+        if (!G.isNvl(mixedDtSt)) {
+            ret += " and mixed_date>=?";
+            pl.add(G.rqm(mixedDtSt));
+        }
+        if (!G.isNvl(mixedDtEd)) {
+            ret += " and mixed_date<=?";
+            pl.add(G.rqm(mixedDtEd));
+        }
+
+
+        return new Tuple(sql + ret, pl);
+    }
+}

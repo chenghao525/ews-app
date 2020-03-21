@@ -1,0 +1,44 @@
+import { MENU_LIST, MECHANICS, VENDORS } from "../actions/generalActions";
+
+const base = (state = {}, action) => {
+    const { payload } = action;
+    switch (action.type) {
+        case MENU_LIST:
+            let { list } = action;
+            list = [
+                {
+                    name: "首页",
+                    subs: [
+                        {"title": "待完善", "to": "/main/home"},
+                    ]
+                },
+                {
+                    name: "工单管理",
+                    subs: [
+                        {"title": "待完善", "to": "/main/ro"},
+                        {"title": "已完善", "to": "/main/ro"},
+                    ]
+                }
+            ]
+            return {
+                ...state,
+                list
+            }
+        case MECHANICS:
+            // const { mechanics } = payload;
+            return {
+                ...state,
+                mechanics: payload
+            }
+        case VENDORS:
+            // const { vendors } = payload;
+            return {
+                ...state,
+                vendors: payload
+            }
+        default:
+            return state
+
+    }
+}
+export default base;

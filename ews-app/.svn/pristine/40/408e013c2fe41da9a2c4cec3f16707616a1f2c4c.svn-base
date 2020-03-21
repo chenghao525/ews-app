@@ -1,0 +1,29 @@
+import { getMechanics, getProviders } from "../../services/generalServices";
+
+export const MENU_LIST  = "MENU_LIST";
+export const MECHANICS  = "MECHANICS";
+export const VENDORS    = "VENDORS";
+
+
+export const menuListAction = (list) => {
+    return {
+        type: MENU_LIST,
+        list
+    }
+}
+
+export const mechanicsAction = (mechanics) => {
+    const rsp = getMechanics(mechanics);
+    return {
+        type: MECHANICS,
+        payload: rsp
+    }
+}
+
+export const vendorsAction = (args) => {
+    const rsp = getProviders(args);
+    return {
+        type: VENDORS,
+        payload: rsp
+    }
+}
